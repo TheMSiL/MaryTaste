@@ -14,6 +14,11 @@ html {
 body {
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
+  background: #faf8fc;
+  color: #35313b;
+  transition:
+    background-color 220ms ease,
+    color 220ms ease;
 }
 button,
 input,
@@ -60,6 +65,153 @@ button {
   color: white;
 }
 
+.theme-toggle {
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 60;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid rgb(117 106 138 / 35%);
+  border-radius: 999px;
+  background: rgb(255 253 255 / 88%);
+  color: #756a8a;
+  box-shadow: 0 10px 30px rgb(40 37 31 / 18%);
+  font-size: 24px;
+  line-height: 1;
+  backdrop-filter: blur(12px);
+  transition:
+    transform 180ms ease,
+    background-color 220ms ease,
+    color 220ms ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px) rotate(8deg);
+}
+
+.theme-toggle:focus-visible {
+  outline: 3px solid rgb(181 143 163 / 50%);
+  outline-offset: 3px;
+}
+
+.theme-toggle__sun {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-toggle__moon {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-toggle__sun {
+  display: inline;
+}
+
+html[data-theme="dark"] body {
+  background: #17151b;
+  color: #eeeaf2;
+}
+
+html[data-theme="dark"] .theme-toggle {
+  border-color: rgb(211 201 219 / 28%);
+  background: rgb(45 40 51 / 90%);
+  color: #f3e5cf;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 35%);
+}
+
+/* The project uses a small, consistent palette in Tailwind arbitrary values.
+   These mappings keep every route on the same dark surface hierarchy. */
+html[data-theme="dark"] [class*="bg-[#FAF8FC]"],
+html[data-theme="dark"] [class*="bg-[#FCFAFD]"] {
+  background-color: #17151b !important;
+}
+
+html[data-theme="dark"] [class*="bg-[#FFFDFF]"],
+html[data-theme="dark"] [class~="bg-white"] {
+  background-color: #211e25 !important;
+}
+
+html[data-theme="dark"] [class*="bg-[#F8F5FA]"],
+html[data-theme="dark"] [class*="bg-[#F7F4F8]"],
+html[data-theme="dark"] [class*="bg-[#F6F0F5]"],
+html[data-theme="dark"] [class*="bg-[#F6EDF2]"],
+html[data-theme="dark"] [class*="bg-[#F5EAF0]"],
+html[data-theme="dark"] [class*="bg-[#F3EFF6]"],
+html[data-theme="dark"] [class*="bg-[#F1EDF5]"],
+html[data-theme="dark"] [class*="bg-[#F0EBF3]"],
+html[data-theme="dark"] [class*="bg-[#EEEAF4]"],
+html[data-theme="dark"] [class*="bg-[#EEE9F0]"] {
+  background-color: #2d2833 !important;
+}
+
+html[data-theme="dark"] [class*="text-[#35313B]"],
+html[data-theme="dark"] [class*="text-[#504A55]"],
+html[data-theme="dark"] [class*="text-[#655F69]"] {
+  color: #f3eff6 !important;
+}
+
+html[data-theme="dark"] [class*="text-[#77717D]"],
+html[data-theme="dark"] [class*="text-[#7E7782]"],
+html[data-theme="dark"] [class*="text-[#847D89]"],
+html[data-theme="dark"] [class*="text-[#928B96]"],
+html[data-theme="dark"] [class*="text-[#AAA2AE]"] {
+  color: #bdb5c2 !important;
+}
+
+html[data-theme="dark"] [class*="text-[#756A8A]"] {
+  color: #c5b6dd !important;
+}
+
+html[data-theme="dark"] [class*="text-[#B58FA3]"] {
+  color: #d7a9c0 !important;
+}
+
+html[data-theme="dark"] [class*="text-[#655B78]"] {
+  color: #bca9d8 !important;
+}
+
+html[data-theme="dark"] [class*="text-[#765465]"] {
+  color: #e2aec7 !important;
+}
+
+html[data-theme="dark"] [class*="text-[#916B7D]"] {
+  color: #dcb0c5 !important;
+}
+
+html[data-theme="dark"] [class*="border-[#E5DFE9]"],
+html[data-theme="dark"] [class*="border-[#E7DFE8]"],
+html[data-theme="dark"] [class*="border-[#E7DFE9]"],
+html[data-theme="dark"] [class*="border-[#F0EAF2]"],
+html[data-theme="dark"] [class*="border-[#DDD6E2]"],
+html[data-theme="dark"] [class*="border-[#DDD6E3]"],
+html[data-theme="dark"] [class*="border-[#DED4E2]"],
+html[data-theme="dark"] [class*="border-[#D8D0DC]"],
+html[data-theme="dark"] [class*="border-[#D8CEDD]"],
+html[data-theme="dark"] [class*="border-[#D3C9DB]"] {
+  border-color: #443d4c !important;
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select {
+  color: #f3eff6;
+}
+
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: #8f8795;
+}
+
+html[data-theme="dark"]
+  .admin-form
+  input:not([type="file"]):not([type="checkbox"]):not([type="hidden"]),
+html[data-theme="dark"] .admin-form textarea {
+  border-color: #443d4c;
+  background: #211e25;
+}
+
 .print-only {
   display: none;
 }
@@ -72,6 +224,17 @@ button {
   body {
     background: white;
     color: #222;
+  }
+
+  html[data-theme="dark"] [class*="bg-[#FAF8FC]"],
+  html[data-theme="dark"] [class*="bg-[#FCFAFD]"],
+  html[data-theme="dark"] [class*="bg-[#FFFDFF]"] {
+    background-color: white !important;
+  }
+
+  html[data-theme="dark"] [class*="text-[#35313B]"],
+  html[data-theme="dark"] [class*="text-[#504A55]"] {
+    color: #222 !important;
   }
 
   .print-hidden {
