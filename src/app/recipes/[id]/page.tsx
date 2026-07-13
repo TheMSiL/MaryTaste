@@ -54,8 +54,13 @@ export default function RecipePage() {
         "title,description,category,cooking_time,servings,difficulty,image_url,ingredients,instructions,structured_ingredients",
       )
       .eq("id", id)
+      .eq("status", "published")
       .single()
       .then(({ data, error }) => {
+        if (error?.message.includes("status")) {
+          createClient().from("recipes").select("title,description,category,cooking_time,servings,difficulty,image_url,ingredients,instructions,structured_ingredients").eq("id", id).single().then(({ data, error }) => { if (error) setError(error.message); else setRecipe(data); setLoading(false); });
+          return;
+        }
         if (error) setError(error.message);
         else setRecipe(data);
         setLoading(false);

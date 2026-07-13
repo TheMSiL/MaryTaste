@@ -2,15 +2,15 @@
 
 // Public recipe collection page.
 
-import Link from "next/link";
-import Image from "next/image";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createClient } from "@/lib/supabase";
 import MobileMenu from "@/app/components/mobile-menu";
-import TransitionArrow from "@/components/ui/transition-arrow";
 import BrandMark from "@/components/brand-mark";
-import Toast, { type ToastMessage } from "@/components/ui/toast";
 import FavoritesLink from "@/components/favorites-link";
+import Toast, { type ToastMessage } from "@/components/ui/toast";
+import TransitionArrow from "@/components/ui/transition-arrow";
+import { createClient } from "@/lib/supabase";
+import Image from "next/image";
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const categories = [
   "Усі рецепти",
@@ -129,6 +129,7 @@ export default function Home() {
         .select(
           "id,title,description,category,cooking_time,difficulty,image_url,is_favorite,ingredients",
         )
+        .eq("status", "published")
         .order("created_at", { ascending: false });
       let data: Array<{
         id: string;
@@ -143,7 +144,7 @@ export default function Home() {
       }> | null = primary.data;
       let error = primary.error;
       let favoriteSupported = true;
-      if (error?.message.includes("is_favorite")) {
+      if (error?.message.includes("is_favorite") || error?.message.includes("status")) {
         favoriteSupported = false;
         const fallback = await supabase
           .from("recipes")
@@ -230,7 +231,7 @@ export default function Home() {
           </p>
         </div>
         <div className="relative mt-9 max-w-2xl">
-          <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">
+          <span className="absolute left-5 top-[46%] -translate-y-1/2 text-xl">
             ⌕
           </span>
           <input
@@ -240,7 +241,7 @@ export default function Home() {
               setVisibleCount(6);
             }}
             placeholder="Знайти рецепт або інгредієнт..."
-            className="w-full rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] py-4 pl-14 pr-5 shadow-sm outline-none transition focus:border-[#756A8A] focus:ring-4 focus:ring-[#756A8A]/10"
+            className="w-full rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] py-4 pl-11 pr-5 shadow-sm outline-none transition focus:border-[#756A8A] focus:ring-4 focus:ring-[#756A8A]/10"
           />
         </div>
       </section>

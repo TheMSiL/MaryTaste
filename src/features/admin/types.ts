@@ -6,6 +6,7 @@ export type AdminRecipe = {
   category: string;
   cooking_time: number;
   is_favorite: boolean;
+  status: "draft" | "published";
 };
 
 export type EditableRecipe = {
@@ -19,6 +20,7 @@ export type EditableRecipe = {
   ingredients: unknown;
   instructions: unknown;
   is_favorite?: boolean;
+  status?: "draft" | "published";
 };
 
 export type RecipeWritePayload = {
@@ -30,6 +32,7 @@ export type RecipeWritePayload = {
   difficulty: string;
   image_url: string | null;
   is_favorite: boolean;
+  status: "draft" | "published";
   ingredients: string[];
   structured_ingredients: ReturnType<
     typeof import("@/features/recipes/ingredients").structuredIngredients

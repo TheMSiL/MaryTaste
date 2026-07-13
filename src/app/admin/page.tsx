@@ -2,18 +2,27 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useState } from "react";
 import TransitionArrow from "@/components/ui/transition-arrow";
 import NewRecipeTab from "@/features/admin/new-recipe-tab";
 import RecipesTab from "@/features/admin/recipes-tab";
 import CategoriesTab from "@/features/admin/categories-tab";
 import type { AdminRecipe, AdminTab } from "@/features/admin/types";
 import {
+  addCategory,
   createAdminRecipe,
+  deleteRecipeImage,
   deleteAdminRecipe,
+  listCategories,
   listAdminRecipes,
+  removeCategory,
+  renameCategory,
   uploadRecipeImage,
 } from "@/features/admin/data";
+import Toast, { type ToastMessage } from "@/components/ui/toast";
+import RecipePreview, { previewFromForm, type RecipePreviewData } from "@/features/admin/recipe-preview";
+import { useUnsavedChanges } from "@/features/admin/use-unsaved-changes";
+import { categories as fallbackCategories } from "@/features/recipes/constants";
 import {
   ingredientLines,
   structuredIngredients,
@@ -30,19 +39,28 @@ export default function AdminPage() {
   const router = useRouter();
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
+  const [toast, setToast] = useState<ToastMessage | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [tab, setTab] = useState<AdminTab>("new");
   const [recipes, setRecipes] = useState<AdminRecipe[]>([]);
   const [listLoading, setListLoading] = useState(false);
   const [ingredientsValue, setIngredientsValue] = useState("");
+  const [categories, setCategories] = useState<string[]>([...fallbackCategories]);
+  const [dirty, setDirty] = useState(false);
+  const [preview, setPreview] = useState<RecipePreviewData | null>(null);
+  const guardLink = useUnsavedChanges(dirty);
+  const dismissToast = useCallback(() => setToast(null), []);
+
+  function notify(text: string, tone: "success" | "error" = "success", persistent = false) {
+    setToast({ id: crypto.randomUUID(), text, tone, persistent });
+  }
 
   useEffect(() => {
     createClient()
       .auth.getUser()
       .then(({ data }) => {
         if (!data.user) router.replace("/login");
-        else setReady(true);
+        else { setReady(true); void listCategories().then(items => { if (items.length) setCategories(items); }); }
       });
   }, [router]);
 
@@ -50,16 +68,14 @@ export default function AdminPage() {
     setListLoading(true);
     try {
       setRecipes(await listAdminRecipes());
-      setMessage("");
     } catch (error) {
-      setMessage(`Помилка: ${error instanceof Error ? error.message : "невідома помилка"}`);
+      notify(error instanceof Error ? error.message : "Невідома помилка", "error");
     }
     setListLoading(false);
   }
 
   function openTab(nextTab: AdminTab) {
     setTab(nextTab);
-    setMessage("");
     if (nextTab !== "new") void loadRecipes();
   }
 
@@ -68,20 +84,22 @@ export default function AdminPage() {
     try {
       await deleteAdminRecipe(id);
       setRecipes((current) => current.filter((recipe) => recipe.id !== id));
+      notify("Рецепт видалено");
     } catch (error) {
-      setMessage(`Помилка: ${error instanceof Error ? error.message : "невідома помилка"}`);
+      notify(error instanceof Error ? error.message : "Невідома помилка", "error");
     }
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSaving(true);
-    setMessage("");
+    notify("Зберігаємо рецепт…", "success", true);
     const formElement = event.currentTarget;
     const form = new FormData(formElement);
+    const status = ((event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null)?.value === "draft" ? "draft" as const : "published" as const;
     const ingredients = ingredientLines(form.get("ingredients"));
     if (!ingredients.length) {
-      setMessage("Помилка: додайте хоча б один інгредієнт.");
+      notify("Додайте хоча б один інгредієнт", "error");
       setSaving(false);
       return;
     }
@@ -100,7 +118,7 @@ export default function AdminPage() {
       try {
         imageUrl = await uploadRecipeImage(user.id, file);
       } catch (error) {
-        setMessage(`Помилка фото: ${error instanceof Error ? error.message : "невідома помилка"}`);
+        notify(error instanceof Error ? error.message : "Не вдалося завантажити фото", "error");
         setSaving(false);
         return;
       }
@@ -113,7 +131,7 @@ export default function AdminPage() {
         .toLowerCase()
         .trim()
         .replace(/[^a-zа-яіїєґ0-9]+/gi, "-")
-        .replace(/(^-|-$)/g, "")}-${Date.now()}`,
+        .replace(/(^-|-$)/g, "")}-${crypto.randomUUID().slice(0, 8)}`,
       cooking_time: Number(form.get("cooking_time")),
       servings: Number(form.get("servings")),
       category: String(form.get("category")),
@@ -121,6 +139,7 @@ export default function AdminPage() {
       description: String(form.get("description")),
       image_url: imageUrl || null,
       is_favorite: form.get("is_favorite") === "on",
+      status,
       ingredients,
       structured_ingredients: structuredIngredients(ingredients),
       instructions: String(form.get("instructions"))
@@ -132,12 +151,14 @@ export default function AdminPage() {
 
     try {
       await createAdminRecipe(payload);
-      setMessage("Рецепт успішно опубліковано!");
+      notify(payload.status === "draft" ? "Чернетку збережено" : "Рецепт опубліковано");
       formElement.reset();
       setFile(null);
       setIngredientsValue("");
+      setDirty(false);
     } catch (error) {
-      setMessage(`Помилка: ${error instanceof Error ? error.message : "невідома помилка"}`);
+      if (imageUrl) await deleteRecipeImage(imageUrl).catch(() => undefined);
+      notify(error instanceof Error ? error.message : "Невідома помилка", "error");
     }
     setSaving(false);
   }
@@ -187,22 +208,27 @@ export default function AdminPage() {
         </aside>
         <section className="min-w-0">
           {tab === "new" && (
-            <NewRecipeTab
+            <div onClick={() => undefined}><NewRecipeTab
               file={file}
               ingredientsValue={ingredientsValue}
-              message={message}
+              categories={categories}
               saving={saving}
               onFileChange={setFile}
               onIngredientsChange={setIngredientsValue}
               onSubmit={submit}
-            />
+              onDirty={() => setDirty(true)}
+              onCancel={guardLink}
+              onPreview={(event) => { const form = event.currentTarget.form; if (form) setPreview(previewFromForm(form, file ? URL.createObjectURL(file) : null)); }}
+            /></div>
           )}
           {tab === "recipes" && (
-            <RecipesTab recipes={recipes} loading={listLoading} message={message} onDelete={(id) => void deleteRecipe(id)} />
+            <RecipesTab recipes={recipes} loading={listLoading} onDelete={(id) => void deleteRecipe(id)} />
           )}
-          {tab === "categories" && <CategoriesTab recipes={recipes} />}
+          {tab === "categories" && <CategoriesTab recipes={recipes} categories={categories} onAdd={async name => { try { await addCategory(name); setCategories(await listCategories()); notify("Категорію додано"); } catch(e) { notify(e instanceof Error ? e.message : "Помилка", "error"); } }} onRename={async (oldName, name) => { try { await renameCategory(oldName, name); setCategories(await listCategories()); await loadRecipes(); notify("Категорію перейменовано"); } catch(e) { notify(e instanceof Error ? e.message : "Помилка", "error"); } }} onRemove={async name => { try { await removeCategory(name); setCategories(await listCategories()); notify("Категорію видалено"); } catch(e) { notify(e instanceof Error ? e.message : "Помилка", "error"); } }} />}
         </section>
       </div>
+      {preview && <RecipePreview data={preview} onClose={() => setPreview(null)} />}
+      <Toast toast={toast} onDismiss={dismissToast} />
     </main>
   );
 }

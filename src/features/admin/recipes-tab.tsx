@@ -4,17 +4,15 @@ import type { AdminRecipe } from "./types";
 type RecipesTabProps = {
   recipes: AdminRecipe[];
   loading: boolean;
-  message: string;
   onDelete: (id: string) => void;
 };
 
-export default function RecipesTab({ recipes, loading, message, onDelete }: RecipesTabProps) {
+export default function RecipesTab({ recipes, loading, onDelete }: RecipesTabProps) {
   return (
     <>
       <p className="text-xs font-bold uppercase tracking-[.2em] text-[#B58FA3]">Колекція</p>
       <h1 className="mt-2 font-serif text-3xl sm:text-4xl">Усі рецепти</h1>
       <p className="mt-3 text-[#77717D]">Переглядайте, редагуйте та видаляйте опубліковані рецепти.</p>
-      {message && <p className="mt-5 rounded-xl bg-red-50 p-4 text-sm text-red-700">{message}</p>}
       <div className="mt-8 overflow-hidden rounded-3xl border border-[#E5DFE9] bg-[#FFFDFF]">
         {loading ? (
           <p className="p-8 text-[#77717D]">Завантажуємо…</p>
@@ -25,6 +23,7 @@ export default function RecipesTab({ recipes, loading, message, onDelete }: Reci
                 <div className="flex flex-wrap items-center gap-2">
                   <h2 className="wrap-break-word font-serif text-lg">{recipe.title}</h2>
                   {recipe.is_favorite && <span className="rounded-full bg-[#B58FA3] px-2 py-1 text-[10px] font-bold text-white">Улюблене</span>}
+                  <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${recipe.status === "draft" ? "bg-amber-100 text-amber-800" : "bg-green-100 text-green-800"}`}>{recipe.status === "draft" ? "Чернетка" : "Опубліковано"}</span>
                 </div>
                 <p className="mt-1 text-xs text-[#7E7782]">{recipe.category} · {recipe.cooking_time} хв</p>
               </div>

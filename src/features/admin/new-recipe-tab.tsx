@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { FormEvent } from "react";
+import type { FormEvent, MouseEventHandler } from "react";
 import CustomSelect from "@/components/ui/custom-select";
 import ImageFilePicker from "@/components/ui/image-file-picker";
 import IngredientComposer from "@/features/ingredient-search/components/ingredient-composer";
@@ -11,21 +11,27 @@ import {
 type NewRecipeTabProps = {
   file: File | null;
   ingredientsValue: string;
-  message: string;
+  categories: string[];
   saving: boolean;
   onFileChange: (file: File | null) => void;
   onIngredientsChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onPreview: MouseEventHandler<HTMLButtonElement>;
+  onCancel: MouseEventHandler<HTMLAnchorElement>;
+  onDirty: () => void;
 };
 
 export default function NewRecipeTab({
   file,
   ingredientsValue,
-  message,
+  categories,
   saving,
   onFileChange,
   onIngredientsChange,
   onSubmit,
+  onPreview,
+  onCancel,
+  onDirty,
 }: NewRecipeTabProps) {
   return (
     <>
@@ -36,6 +42,7 @@ export default function NewRecipeTab({
       </p>
       <form
         onSubmit={onSubmit}
+        onChange={onDirty}
         className="admin-form mt-6 min-w-0 space-y-6 overflow-visible rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] p-4 shadow-sm sm:mt-8 sm:rounded-3xl sm:p-6 md:p-9"
       >
         <ImageFilePicker file={file} onChange={onFileChange} />
@@ -54,7 +61,7 @@ export default function NewRecipeTab({
           </label>
         </div>
         <div className="grid gap-5 md:grid-cols-2">
-          <CustomSelect required name="category" label="Категорія" options={categoryOptions} placeholder="Виберіть категорію" />
+          <CustomSelect required name="category" label="Категорія" options={(categories.length ? categories : categoryOptions.map(x => x.value)).map(value => ({ value, label: value }))} placeholder="Виберіть категорію" />
           <CustomSelect name="difficulty" label="Складність" options={difficultyOptions} defaultValue="Легко" />
         </div>
         <label className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-[#E7DFE8] bg-[#F6F0F5] p-4">
@@ -84,12 +91,11 @@ export default function NewRecipeTab({
           </span>
           <textarea required name="instructions" rows={7} className="w-full resize-none rounded-xl border border-[#E5DFE9] px-4 py-3" placeholder="Підготуйте інгредієнти…" />
         </label>
-        {message && (
-          <p className={`rounded-xl p-4 text-sm ${message.startsWith("Помилка") ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700"}`}>{message}</p>
-        )}
         <div className="flex flex-col-reverse gap-3 border-t border-[#F0EAF2] pt-6 sm:flex-row sm:justify-end">
-          <Link href="/" className="rounded-full px-5 py-3 text-center text-sm font-bold">Скасувати</Link>
-          <button disabled={saving} className="rounded-full bg-[#756A8A] px-6 py-3 text-sm font-bold text-white disabled:opacity-60">
+          <Link href="/" onClick={onCancel} className="rounded-full px-5 py-3 text-center text-sm font-bold">Скасувати</Link>
+          <button type="button" onClick={onPreview} className="rounded-full border border-[#756A8A]/30 px-5 py-3 text-sm font-bold text-[#756A8A]">Передперегляд</button>
+          <button type="submit" name="status" value="draft" formNoValidate disabled={saving} className="rounded-full bg-[#EEEAF4] px-5 py-3 text-sm font-bold text-[#756A8A] disabled:opacity-60">Зберегти чернетку</button>
+          <button type="submit" name="status" value="published" disabled={saving} className="rounded-full bg-[#756A8A] px-6 py-3 text-sm font-bold text-white disabled:opacity-60">
             {saving ? "Зберігаємо…" : "Опублікувати рецепт"}
           </button>
         </div>

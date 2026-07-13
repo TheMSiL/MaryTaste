@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 export type ToastMessage = {
-  id: number;
+  id: number | string;
   text: string;
   tone?: "default" | "success" | "error";
   persistent?: boolean;

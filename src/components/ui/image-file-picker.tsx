@@ -1,12 +1,14 @@
 "use client";
 
-import { useId, useState } from "react";
+import Image from "next/image";
+import { useEffect, useId, useState } from "react";
 
 type ImageFilePickerProps = {
   file: File | null;
   onChange: (file: File | null) => void;
   label?: string;
   hint?: string;
+  currentUrl?: string | null;
 };
 
 export default function ImageFilePicker({
@@ -14,12 +16,22 @@ export default function ImageFilePicker({
   onChange,
   label = "Фотографія страви",
   hint = "JPEG, PNG або WebP",
+  currentUrl = null,
 }: ImageFilePickerProps) {
   const id = useId();
   const [dragging, setDragging] = useState(false);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
+  const preview = file ? filePreview : currentUrl;
+
+  useEffect(() => {
+    return () => { if (filePreview) URL.revokeObjectURL(filePreview); };
+  }, [filePreview]);
 
   function acceptFile(nextFile?: File) {
-    if (nextFile?.type.startsWith("image/")) onChange(nextFile);
+    if (nextFile && ['image/jpeg', 'image/png', 'image/webp'].includes(nextFile.type) && nextFile.size <= 8 * 1024 * 1024) {
+      setFilePreview(URL.createObjectURL(nextFile));
+      onChange(nextFile);
+    }
   }
 
   return (
@@ -38,7 +50,7 @@ export default function ImageFilePicker({
           setDragging(false);
           acceptFile(event.dataTransfer.files[0]);
         }}
-        className={`group flex min-h-32 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-5 py-6 text-center transition ${dragging ? "border-[#756A8A] bg-[#EEEAF4]" : "border-[#E5DFE9] bg-[#FCFAFD] hover:border-[#756A8A]/60 hover:bg-[#F8F5FA]"}`}
+        className={`group relative flex min-h-48 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed px-5 py-6 text-center transition ${dragging ? "border-[#756A8A] bg-[#EEEAF4]" : "border-[#E5DFE9] bg-[#FCFAFD] hover:border-[#756A8A]/60 hover:bg-[#F8F5FA]"}`}
       >
         <input
           id={id}
@@ -47,24 +59,26 @@ export default function ImageFilePicker({
           onChange={(event) => acceptFile(event.target.files?.[0])}
           className="sr-only"
         />
-        <span className="grid h-10 w-10 place-items-center rounded-full bg-[#EEEAF4] text-xl text-[#756A8A] transition group-hover:scale-105">
+        {preview && <Image src={preview} alt="Предпросмотр фотографии" fill unoptimized className="object-cover" />}
+        {preview && <span className="absolute inset-0 bg-black/35" />}
+        <span className="relative grid h-10 w-10 place-items-center rounded-full bg-[#EEEAF4] text-xl text-[#756A8A] transition group-hover:scale-105">
           ↑
         </span>
         {file ? (
           <>
-            <span className="mt-3 max-w-full truncate text-sm font-bold text-[#756A8A]">
+            <span className="relative mt-3 max-w-full truncate rounded-full bg-white/90 px-3 py-1 text-sm font-bold text-[#756A8A]">
               {file.name}
             </span>
-            <span className="mt-1 text-xs text-[#7E7782]">
+            <span className="relative mt-1 text-xs text-white">
               Натисніть, щоб замінити фото
             </span>
           </>
         ) : (
           <>
-            <span className="mt-3 text-sm font-bold text-[#756A8A]">
+            <span className="relative mt-3 text-sm font-bold text-[#756A8A]">
               Обрати або перетягнути фото
             </span>
-            <span className="mt-1 text-xs text-[#7E7782]">{hint}</span>
+            <span className="relative mt-1 text-xs text-[#7E7782]">{hint} · до 8 МБ</span>
           </>
         )}
       </label>

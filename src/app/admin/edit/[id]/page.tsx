@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 import CustomSelect from "@/components/ui/custom-select";
@@ -15,12 +15,17 @@ import {
 } from "@/features/recipes/ingredients";
 import {
   getAdminRecipe,
+  deleteRecipeImage,
+  listCategories,
   updateAdminRecipe,
   uploadRecipeImage,
 } from "@/features/admin/data";
 import type { EditableRecipe } from "@/features/admin/types";
 import IngredientComposer from "@/features/ingredient-search/components/ingredient-composer";
 import ImageFilePicker from "@/components/ui/image-file-picker";
+import Toast, { type ToastMessage } from "@/components/ui/toast";
+import RecipePreview, { previewFromForm, type RecipePreviewData } from "@/features/admin/recipe-preview";
+import { useUnsavedChanges } from "@/features/admin/use-unsaved-changes";
 const listText = (value: unknown) =>
   Array.isArray(value) ? value.join("\n") : String(value || "");
 
@@ -30,8 +35,14 @@ export default function EditRecipePage() {
   const [recipe, setRecipe] = useState<EditableRecipe | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
+  const [toast, setToast] = useState<ToastMessage | null>(null);
   const [ingredientsValue, setIngredientsValue] = useState("");
+  const [categories, setCategories] = useState<string[]>(categoryOptions.map(x => x.value));
+  const [dirty, setDirty] = useState(false);
+  const [preview, setPreview] = useState<RecipePreviewData | null>(null);
+  const guardLink = useUnsavedChanges(dirty);
+  const dismissToast = useCallback(() => setToast(null), []);
+  const notify = (text: string, tone: "success" | "error" = "success", persistent = false) => setToast({ id: crypto.randomUUID(), text, tone, persistent });
 
   useEffect(() => {
     const supabase = createClient();
@@ -44,8 +55,10 @@ export default function EditRecipePage() {
         const loadedRecipe = await getAdminRecipe(id);
         setRecipe(loadedRecipe);
         setIngredientsValue(listText(loadedRecipe.ingredients));
+        const items = await listCategories();
+        if (items.length) setCategories(items);
       } catch (error) {
-        setMessage(`Помилка: ${error instanceof Error ? error.message : "невідома помилка"}`);
+        notify(error instanceof Error ? error.message : "Невідома помилка", "error");
       }
     });
   }, [id, router]);
@@ -53,11 +66,12 @@ export default function EditRecipePage() {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSaving(true);
-    setMessage("");
+    notify("Зберігаємо зміни…", "success", true);
     const form = new FormData(event.currentTarget);
+    const status = ((event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null)?.value === "draft" ? "draft" as const : "published" as const;
     const ingredients = ingredientLines(form.get("ingredients"));
     if (!ingredients.length) {
-      setMessage("Помилка: додайте хоча б один інгредієнт.");
+      notify("Додайте хоча б один інгредієнт", "error");
       setSaving(false);
       return;
     }
@@ -74,7 +88,7 @@ export default function EditRecipePage() {
       try {
         imageUrl = await uploadRecipeImage(user.id, file);
       } catch (error) {
-        setMessage(`Помилка фото: ${error instanceof Error ? error.message : "невідома помилка"}`);
+        notify(error instanceof Error ? error.message : "Помилка фото", "error");
         setSaving(false);
         return;
       }
@@ -94,14 +108,18 @@ export default function EditRecipePage() {
         .map((x) => x.trim())
         .filter(Boolean),
       is_favorite: form.get("is_favorite") === "on",
+      status,
       updated_at: new Date().toISOString(),
     };
     try {
       await updateAdminRecipe(id, payload);
-      setMessage("Зміни збережено!");
+      if (file && recipe?.image_url && recipe.image_url !== imageUrl) await deleteRecipeImage(recipe.image_url);
+      setDirty(false);
+      notify(payload.status === "draft" ? "Чернетку збережено" : "Зміни опубліковано");
       setTimeout(() => router.push("/admin"), 700);
     } catch (error) {
-      setMessage(`Помилка: ${error instanceof Error ? error.message : "невідома помилка"}`);
+      if (file && imageUrl !== recipe?.image_url) await deleteRecipeImage(imageUrl);
+      notify(error instanceof Error ? error.message : "Невідома помилка", "error");
     }
     setSaving(false);
   }
@@ -109,15 +127,13 @@ export default function EditRecipePage() {
   if (!recipe)
     return (
       <main className="grid min-h-screen place-items-center bg-[#FAF8FC]">
-        <p className={message ? "text-red-700" : "text-[#77717D]"}>
-          {message || "Завантажуємо рецепт…"}
-        </p>
+        <p className="text-[#77717D]">Завантажуємо рецепт…</p>
       </main>
     );
   return (
     <main className="min-h-screen bg-[#FAF8FC] px-4 py-7 text-[#35313B] sm:px-5 sm:py-10">
       <div className="mx-auto max-w-3xl">
-        <Link href="/admin" className="text-sm font-bold text-[#756A8A]">
+        <Link href="/admin" onClick={guardLink} className="text-sm font-bold text-[#756A8A]">
           ← До всіх рецептів
         </Link>
         <p className="mt-8 text-xs font-bold uppercase tracking-[.2em] text-[#B58FA3]">
@@ -128,6 +144,7 @@ export default function EditRecipePage() {
         </h1>
         <form
           onSubmit={submit}
+          onChange={() => setDirty(true)}
           className="admin-form mt-6 min-w-0 space-y-5 overflow-visible rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] p-4 sm:mt-8 sm:rounded-3xl sm:p-6 md:p-9"
         >
           <ImageFilePicker
@@ -135,6 +152,7 @@ export default function EditRecipePage() {
             onChange={setFile}
             label="Нова фотографія"
             hint="Необов’язково · JPEG, PNG або WebP"
+            currentUrl={recipe.image_url}
           />
           <label className="block text-sm font-bold">
             Назва
@@ -173,7 +191,7 @@ export default function EditRecipePage() {
             <CustomSelect
               name="category"
               label="Категорія"
-              options={categoryOptions}
+              options={categories.map(value => ({ value, label: value }))}
               defaultValue={recipe.category}
             />
             <CustomSelect
@@ -223,21 +241,20 @@ export default function EditRecipePage() {
               className="mt-2 w-full rounded-xl border border-[#E5DFE9] px-4 py-3 font-normal"
             />
           </label>
-          {message && (
-            <p
-              className={`rounded-xl p-4 text-sm ${message.startsWith("Помилка") ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700"}`}
-            >
-              {message}
-            </p>
-          )}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <Link
               href="/admin"
+              onClick={guardLink}
               className="px-5 py-3 text-center text-sm font-bold"
             >
               Скасувати
             </Link>
+            <button type="button" onClick={event => { const form = event.currentTarget.form; if (form) setPreview(previewFromForm(form, file ? URL.createObjectURL(file) : recipe.image_url)); }} className="rounded-full border border-[#756A8A]/30 px-5 py-3 text-sm font-bold text-[#756A8A]">Передперегляд</button>
+            <button type="submit" name="status" value="draft" formNoValidate disabled={saving} className="rounded-full bg-[#EEEAF4] px-5 py-3 text-sm font-bold text-[#756A8A]">Зберегти чернетку</button>
             <button
+              type="submit"
+              name="status"
+              value="published"
               disabled={saving}
               className="rounded-full bg-[#756A8A] px-6 py-3 text-sm font-bold text-white disabled:opacity-60"
             >
@@ -246,6 +263,8 @@ export default function EditRecipePage() {
           </div>
         </form>
       </div>
+      {preview && <RecipePreview data={preview} onClose={() => setPreview(null)} />}
+      <Toast toast={toast} onDismiss={dismissToast} />
     </main>
   );
 }
