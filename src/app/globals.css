@@ -212,6 +212,15 @@ html[data-theme="dark"] .admin-form textarea {
   background: #211e25;
 }
 
+html[data-theme="dark"] .custom-select__option:not([aria-selected="true"]) {
+  background-color: transparent !important;
+}
+
+html[data-theme="dark"]
+  .custom-select__option:not([aria-selected="true"]):hover {
+  background-color: #2d2833 !important;
+}
+
 .print-only {
   display: none;
 }

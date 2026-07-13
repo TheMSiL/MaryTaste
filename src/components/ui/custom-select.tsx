@@ -109,7 +109,7 @@ export default function CustomSelect({
                 role="option"
                 aria-selected={active}
                 onClick={() => choose(option.value)}
-                className={`flex min-h-11 w-full items-center justify-between gap-2 whitespace-nowrap rounded-xl px-3 text-left text-sm transition ${active ? "bg-[#756A8A] font-semibold text-white" : "text-[#504A55] hover:bg-[#F3EFF6]"}`}
+                className={`custom-select__option flex min-h-11 w-full items-center justify-between gap-2 whitespace-nowrap rounded-xl px-3 text-left text-sm transition ${active ? "bg-[#756A8A] font-semibold text-white" : "text-[#504A55] hover:bg-[#F3EFF6]"}`}
               >
                 {option.label}
                 {active && <span aria-hidden="true">✓</span>}
