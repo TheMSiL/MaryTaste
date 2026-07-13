@@ -98,7 +98,7 @@ export default function CustomSelect({
           id={`${id}-listbox`}
           role="listbox"
           aria-labelledby={`${id}-label`}
-          className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 max-h-64 overflow-y-auto rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] p-2 shadow-[0_18px_45px_rgba(40,37,31,.16)]"
+          className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 max-h-64 overflow-x-hidden overflow-y-auto rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] p-2 shadow-[0_18px_45px_rgba(40,37,31,.16)]"
         >
           {options.map((option) => {
             const active = option.value === selectedValue;
@@ -109,7 +109,7 @@ export default function CustomSelect({
                 role="option"
                 aria-selected={active}
                 onClick={() => choose(option.value)}
-                className={`flex min-h-11 w-full items-center justify-between rounded-xl px-4 text-left text-sm transition ${active ? "bg-[#756A8A] font-semibold text-white" : "text-[#504A55] hover:bg-[#F3EFF6]"}`}
+                className={`flex min-h-11 w-full items-center justify-between gap-2 whitespace-nowrap rounded-xl px-3 text-left text-sm transition ${active ? "bg-[#756A8A] font-semibold text-white" : "text-[#504A55] hover:bg-[#F3EFF6]"}`}
               >
                 {option.label}
                 {active && <span aria-hidden="true">✓</span>}

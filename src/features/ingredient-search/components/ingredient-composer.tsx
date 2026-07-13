@@ -89,7 +89,7 @@ export default function IngredientComposer({
           {items.map((item, index) => (
             <div
               key={`${item.name}-${index}`}
-              className="grid grid-cols-[minmax(0,1fr)_72px_72px_34px] items-center gap-2 rounded-xl bg-[#F1EDF5] p-2 text-[#756A8A] max-[450px]:grid-cols-[minmax(0,1fr)_88px_34px] max-[450px]:gap-y-2 max-[450px]:p-2.5"
+              className="grid grid-cols-[minmax(0,1fr)_72px_104px_34px] items-center gap-2 rounded-xl bg-[#F1EDF5] p-2 text-[#756A8A] max-[450px]:grid-cols-[minmax(0,1fr)_104px_34px] max-[450px]:gap-y-2 max-[450px]:p-2.5"
             >
               <span className="min-w-0 truncate pl-2 text-sm font-semibold max-[450px]:col-span-2 max-[450px]:col-start-1 max-[450px]:row-start-1 max-[450px]:pr-2">
                 {item.name}

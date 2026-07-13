@@ -60,6 +60,40 @@ button {
   color: white;
 }
 
+.print-only {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  body {
+    background: white;
+    color: #222;
+  }
+
+  .print-hidden {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block;
+  }
+
+  article {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  section,
+  img {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+}
+
 @media (max-width: 640px) {
   body {
     overflow-x: hidden;

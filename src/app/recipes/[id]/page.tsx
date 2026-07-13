@@ -6,8 +6,12 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase";
 import PortionCalculator from "@/features/recipes/portion-calculator";
+import ScaledIngredientList from "@/features/recipes/scaled-ingredient-list";
+import CookingSteps from "@/features/recipes/cooking-steps";
+import RecipeActions from "@/features/recipes/recipe-actions";
 import { calculatorIngredients } from "@/features/recipes/ingredients";
 import TransitionArrow from "@/components/ui/transition-arrow";
+import FavoritesLink from "@/components/favorites-link";
 
 type Recipe = {
   title: string;
@@ -89,7 +93,7 @@ export default function RecipePage() {
   );
   return (
     <main className="min-h-screen bg-[#FAF8FC] text-[#35313B]">
-      <header className="border-b border-[#E5DFE9] bg-[#FAF8FC]/90">
+      <header className="print-hidden border-b border-[#E5DFE9] bg-[#FAF8FC]/90">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
           <Link
             href="/"
@@ -98,6 +102,7 @@ export default function RecipePage() {
             <TransitionArrow back />
             MaryTaste
           </Link>
+          <FavoritesLink />
         </div>
       </header>
       <article className="mx-auto max-w-6xl px-5 py-10 lg:py-16">
@@ -123,6 +128,7 @@ export default function RecipePage() {
                 ◇ {recipe.difficulty}
               </span>
             </div>
+            <RecipeActions recipeId={id} />
           </div>
           <Image
             src={recipe.image_url || fallbackImage}
@@ -135,38 +141,24 @@ export default function RecipePage() {
             className="aspect-[4/3] h-full w-full rounded-[30px] object-cover shadow-xl shadow-[#6C6570]/10"
           />
         </div>
-        <PortionCalculator
-          ingredients={calculatorItems}
-          baseServings={recipe.servings}
-        />
+        <div className="print-hidden">
+          <PortionCalculator
+            ingredients={calculatorItems}
+            baseServings={recipe.servings}
+          />
+        </div>
         <div className="mt-14 grid gap-8 lg:grid-cols-[.8fr_1.2fr]">
-          <section className="rounded-3xl bg-[#F0EBF3] p-7 md:p-9">
-            <h2 className="font-serif text-3xl">Інгредієнти</h2>
-            <ul className="mt-6 space-y-3">
-              {ingredients.map((item, index) => (
-                <li
-                  key={index}
-                  className="flex gap-3 border-b border-[#DED4E2] pb-3 last:border-0"
-                >
-                  <span className="text-[#756A8A]">●</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </section>
-          <section className="rounded-3xl border border-[#E5DFE9] bg-[#FFFDFF] p-7 md:p-9">
-            <h2 className="font-serif text-3xl">Приготування</h2>
-            <ol className="mt-7 space-y-7">
-              {instructions.map((step, index) => (
-                <li key={index} className="flex gap-5">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#756A8A] text-sm font-bold text-white">
-                    {index + 1}
-                  </span>
-                  <p className="pt-1 leading-7 text-[#655F69]">{step}</p>
-                </li>
-              ))}
-            </ol>
-          </section>
+          <ScaledIngredientList
+            key={`ingredients-${id}`}
+            ingredients={ingredients}
+            baseServings={recipe.servings}
+            recipeId={id}
+          />
+          <CookingSteps
+            key={`cooking-${id}`}
+            steps={instructions}
+            recipeId={id}
+          />
         </div>
       </article>
     </main>

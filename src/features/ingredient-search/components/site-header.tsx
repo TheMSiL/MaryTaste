@@ -2,6 +2,7 @@ import Link from "next/link";
 import MobileMenu from "@/app/components/mobile-menu";
 import TransitionArrow from "@/components/ui/transition-arrow";
 import BrandMark from "@/components/brand-mark";
+import FavoritesLink from "@/components/favorites-link";
 
 export default function SiteHeader() {
   return (
@@ -14,14 +15,17 @@ export default function SiteHeader() {
             <small className="text-[#7E7782]">Готуємо з любов’ю</small>
           </span>
         </Link>
-        <Link
-          href="/catalog"
-          className="group hidden items-center duration-300 gap-2 rounded-full border border-[#756A8A] py-1.5 pl-4 pr-1.5 text-sm font-semibold text-[#756A8A] transition hover:bg-[#756A8A] hover:text-white sm:flex"
-        >
-          Рецепти
-          <TransitionArrow />
-        </Link>
-        <MobileMenu />
+        <div className="flex items-center gap-2">
+          <Link
+            href="/recipes"
+            className="group hidden items-center gap-2 rounded-full border border-[#756A8A] py-1.5 pl-4 pr-1.5 text-sm font-semibold text-[#756A8A] transition duration-300 hover:bg-[#756A8A] hover:text-white sm:flex"
+          >
+            Рецепти
+            <TransitionArrow />
+          </Link>
+          <FavoritesLink />
+          <MobileMenu />
+        </div>
       </div>
     </header>
   );

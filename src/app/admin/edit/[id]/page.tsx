@@ -11,30 +11,23 @@ import {
 } from "@/features/recipes/constants";
 import {
   ingredientLines,
-  missingStructuredIngredientsColumn,
   structuredIngredients,
 } from "@/features/recipes/ingredients";
+import {
+  getAdminRecipe,
+  updateAdminRecipe,
+  uploadRecipeImage,
+} from "@/features/admin/data";
+import type { EditableRecipe } from "@/features/admin/types";
 import IngredientComposer from "@/features/ingredient-search/components/ingredient-composer";
 import ImageFilePicker from "@/components/ui/image-file-picker";
-type Recipe = {
-  title: string;
-  description: string;
-  category: string;
-  cooking_time: number;
-  servings: number;
-  difficulty: string;
-  image_url: string | null;
-  ingredients: unknown;
-  instructions: unknown;
-  is_favorite?: boolean;
-};
 const listText = (value: unknown) =>
   Array.isArray(value) ? value.join("\n") : String(value || "");
 
 export default function EditRecipePage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const [recipe, setRecipe] = useState<Recipe | null>(null);
+  const [recipe, setRecipe] = useState<EditableRecipe | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -47,25 +40,12 @@ export default function EditRecipePage() {
         router.replace("/login");
         return;
       }
-      let result = await supabase
-        .from("recipes")
-        .select(
-          "title,description,category,cooking_time,servings,difficulty,image_url,ingredients,instructions,is_favorite",
-        )
-        .eq("id", id)
-        .single();
-      if (result.error?.message.includes("is_favorite"))
-        result = (await supabase
-          .from("recipes")
-          .select(
-            "title,description,category,cooking_time,servings,difficulty,image_url,ingredients,instructions",
-          )
-          .eq("id", id)
-          .single()) as typeof result;
-      if (result.error) setMessage(`Помилка: ${result.error.message}`);
-      else {
-        setRecipe(result.data);
-        setIngredientsValue(listText(result.data.ingredients));
+      try {
+        const loadedRecipe = await getAdminRecipe(id);
+        setRecipe(loadedRecipe);
+        setIngredientsValue(listText(loadedRecipe.ingredients));
+      } catch (error) {
+        setMessage(`Помилка: ${error instanceof Error ? error.message : "невідома помилка"}`);
       }
     });
   }, [id, router]);
@@ -91,17 +71,13 @@ export default function EditRecipePage() {
     }
     let imageUrl = recipe?.image_url || null;
     if (file) {
-      const path = `${user.id}/${crypto.randomUUID()}.${file.name.split(".").pop()}`;
-      const upload = await supabase.storage
-        .from("recipe-images")
-        .upload(path, file);
-      if (upload.error) {
-        setMessage(`Помилка фото: ${upload.error.message}`);
+      try {
+        imageUrl = await uploadRecipeImage(user.id, file);
+      } catch (error) {
+        setMessage(`Помилка фото: ${error instanceof Error ? error.message : "невідома помилка"}`);
         setSaving(false);
         return;
       }
-      imageUrl = supabase.storage.from("recipe-images").getPublicUrl(path)
-        .data.publicUrl;
     }
     const payload = {
       title: String(form.get("title")),
@@ -120,21 +96,14 @@ export default function EditRecipePage() {
       is_favorite: form.get("is_favorite") === "on",
       updated_at: new Date().toISOString(),
     };
-    let { error } = await supabase.from("recipes").update(payload).eq("id", id);
-    if (error && missingStructuredIngredientsColumn(error.message)) {
-      const { structured_ingredients: _, ...legacyPayload } = payload;
-      void _;
-      ({ error } = await supabase
-        .from("recipes")
-        .update(legacyPayload)
-        .eq("id", id));
-    }
-    setSaving(false);
-    if (error) setMessage(`Помилка: ${error.message}`);
-    else {
+    try {
+      await updateAdminRecipe(id, payload);
       setMessage("Зміни збережено!");
       setTimeout(() => router.push("/admin"), 700);
+    } catch (error) {
+      setMessage(`Помилка: ${error instanceof Error ? error.message : "невідома помилка"}`);
     }
+    setSaving(false);
   }
 
   if (!recipe)

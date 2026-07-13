@@ -7,7 +7,7 @@ import TransitionArrow from "@/components/ui/transition-arrow";
 
 const links = [
   { href: "/", label: "Головна" },
-  { href: "/catalog", label: "Каталог рецептів" },
+  { href: "/recipes", label: "Рецепти" },
 ];
 
 export default function MobileMenu() {
