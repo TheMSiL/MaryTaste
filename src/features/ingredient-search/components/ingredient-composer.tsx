@@ -66,6 +66,14 @@ export default function IngredientComposer({
     () => toOptions(recipeMode ? recipeUnits : searchUnits),
     [recipeMode],
   );
+  const customName = draft.trim();
+  const canAddCustomName =
+    recipeMode &&
+    customName.length > 0 &&
+    !items.some(
+      (item) =>
+        item.name.toLocaleLowerCase() === customName.toLocaleLowerCase(),
+    );
 
   function updateItem(index: number, patch: Partial<ComposerItem>) {
     onChange(
@@ -78,7 +86,12 @@ export default function IngredientComposer({
   }
 
   function addItem(name: string) {
-    onChange(serialize([...items, { name, amount: "", unit: "г" }]));
+    const trimmedName = name.trim();
+    if (!trimmedName) return;
+
+    onChange(
+      serialize([...items, { name: trimmedName, amount: "", unit: "г" }]),
+    );
     setDraft("");
   }
 
@@ -139,15 +152,23 @@ export default function IngredientComposer({
         <input
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && canAddCustomName) {
+              event.preventDefault();
+              addItem(customName);
+            }
+          }}
           placeholder={
             items.length
               ? "Додати ще продукт…"
-              : "Почніть писати: курка, кабачок…"
+              : recipeMode
+                ? "Введіть назву продукту…"
+                : "Почніть писати: курка, кабачок…"
           }
           aria-label="Знайти продукт"
           className="h-13 w-full rounded-xl border border-transparent bg-[#FFFDFF] px-4 text-base text-[#35313B] outline-none transition placeholder:text-[#AAA2AE] focus:border-[#D3C9DB] focus:ring-4 focus:ring-white/10"
         />
-        {suggestions.length > 0 && (
+        {(suggestions.length > 0 || canAddCustomName) && (
           <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 overflow-hidden rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] p-2 shadow-[0_18px_45px_rgba(20,40,28,.22)]">
             <p className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[.16em] text-[#847D89]">
               Оберіть продукт
@@ -163,6 +184,18 @@ export default function IngredientComposer({
                 <span aria-hidden="true">＋</span>
               </button>
             ))}
+            {canAddCustomName && (
+              <button
+                type="button"
+                onClick={() => addItem(customName)}
+                className="flex min-h-10 w-full items-center justify-between rounded-xl px-3 text-left text-sm font-semibold text-[#756A8A] transition hover:bg-[#EEEAF4]"
+              >
+                <span className="min-w-0 truncate">
+                  Додати нову назву: «{customName}»
+                </span>
+                <span aria-hidden="true">＋</span>
+              </button>
+            )}
           </div>
         )}
       </div>
