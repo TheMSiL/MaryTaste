@@ -60,19 +60,19 @@ export default function RecipePage() {
 
   if (loading)
     return (
-      <main className="grid min-h-screen place-items-center bg-[#f8f5ee] text-[#716b61]">
+      <main className="grid min-h-screen place-items-center bg-[#FAF8FC] text-[#77717D]">
         Завантажуємо рецепт…
       </main>
     );
   if (error || !recipe)
     return (
-      <main className="grid min-h-screen place-items-center bg-[#f8f5ee] px-5 text-center">
+      <main className="grid min-h-screen place-items-center bg-[#FAF8FC] px-5 text-center">
         <div>
           <h1 className="font-serif text-4xl">Рецепт не знайдено</h1>
-          <p className="mt-3 text-[#716b61]">{error}</p>
+          <p className="mt-3 text-[#77717D]">{error}</p>
           <Link
             href="/"
-            className="group mt-6 inline-flex items-center gap-2 font-bold text-[#315c42]"
+            className="group mt-6 inline-flex items-center gap-2 font-bold text-[#756A8A]"
           >
             <TransitionArrow back />
             Повернутися до рецептів
@@ -88,8 +88,8 @@ export default function RecipePage() {
     recipe.ingredients,
   );
   return (
-    <main className="min-h-screen bg-[#f8f5ee] text-[#28251f]">
-      <header className="border-b border-[#ded8ca] bg-[#f8f5ee]/90">
+    <main className="min-h-screen bg-[#FAF8FC] text-[#35313B]">
+      <header className="border-b border-[#E5DFE9] bg-[#FAF8FC]/90">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
           <Link
             href="/"
@@ -103,23 +103,23 @@ export default function RecipePage() {
       <article className="mx-auto max-w-6xl px-5 py-10 lg:py-16">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[.2em] text-[#b55d3a]">
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-[#B58FA3]">
               {recipe.category}
             </p>
             <h1 className="mt-4 font-serif text-5xl leading-tight md:text-6xl">
               {recipe.title}
             </h1>
-            <p className="mt-5 text-lg leading-8 text-[#716b61]">
+            <p className="mt-5 text-lg leading-8 text-[#77717D]">
               {recipe.description}
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <span className="rounded-full bg-white px-4 py-2 text-sm">
+              <span className="rounded-full bg-[#FFFDFF] px-4 py-2 text-sm">
                 ◷ {recipe.cooking_time} хв
               </span>
-              <span className="rounded-full bg-white px-4 py-2 text-sm">
+              <span className="rounded-full bg-[#FFFDFF] px-4 py-2 text-sm">
                 ♙ {recipe.servings} порції
               </span>
-              <span className="rounded-full bg-white px-4 py-2 text-sm">
+              <span className="rounded-full bg-[#FFFDFF] px-4 py-2 text-sm">
                 ◇ {recipe.difficulty}
               </span>
             </div>
@@ -132,7 +132,7 @@ export default function RecipePage() {
             unoptimized={Boolean(recipe.image_url?.includes("supabase.co"))}
             sizes="(max-width: 1023px) 100vw, 50vw"
             priority
-            className="aspect-[4/3] h-full w-full rounded-[30px] object-cover shadow-xl shadow-[#514632]/10"
+            className="aspect-[4/3] h-full w-full rounded-[30px] object-cover shadow-xl shadow-[#6C6570]/10"
           />
         </div>
         <PortionCalculator
@@ -140,29 +140,29 @@ export default function RecipePage() {
           baseServings={recipe.servings}
         />
         <div className="mt-14 grid gap-8 lg:grid-cols-[.8fr_1.2fr]">
-          <section className="rounded-3xl bg-[#e9dfca] p-7 md:p-9">
+          <section className="rounded-3xl bg-[#F0EBF3] p-7 md:p-9">
             <h2 className="font-serif text-3xl">Інгредієнти</h2>
             <ul className="mt-6 space-y-3">
               {ingredients.map((item, index) => (
                 <li
                   key={index}
-                  className="flex gap-3 border-b border-[#d6c8ae] pb-3 last:border-0"
+                  className="flex gap-3 border-b border-[#DED4E2] pb-3 last:border-0"
                 >
-                  <span className="text-[#315c42]">●</span>
+                  <span className="text-[#756A8A]">●</span>
                   {item}
                 </li>
               ))}
             </ul>
           </section>
-          <section className="rounded-3xl border border-[#ded8ca] bg-white p-7 md:p-9">
+          <section className="rounded-3xl border border-[#E5DFE9] bg-[#FFFDFF] p-7 md:p-9">
             <h2 className="font-serif text-3xl">Приготування</h2>
             <ol className="mt-7 space-y-7">
               {instructions.map((step, index) => (
                 <li key={index} className="flex gap-5">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#315c42] text-sm font-bold text-white">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#756A8A] text-sm font-bold text-white">
                     {index + 1}
                   </span>
-                  <p className="pt-1 leading-7 text-[#5f594f]">{step}</p>
+                  <p className="pt-1 leading-7 text-[#655F69]">{step}</p>
                 </li>
               ))}
             </ol>

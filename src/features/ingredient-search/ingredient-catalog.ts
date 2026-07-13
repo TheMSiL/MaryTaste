@@ -14,9 +14,7 @@ export function resolveIngredientName(value: string): ResolvedIngredient {
   const normalizedName = words.join(" ");
   const firstWord = normalizedName.split(" ")[0];
   const canonicalName =
-    externalNames[normalizedName] ||
-    externalNames[firstWord] ||
-    normalizedName;
+    externalNames[normalizedName] || externalNames[firstWord] || normalizedName;
 
   return {
     canonicalName,

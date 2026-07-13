@@ -27,20 +27,20 @@ export default function LoginPage() {
     }
   }
   return (
-    <main className="grid min-h-screen place-items-center bg-[#f8f5ee] px-5">
+    <main className="grid min-h-screen place-items-center bg-[#FAF8FC] px-5">
       <div className="w-full max-w-md">
-        <Link href="/" className="text-sm font-bold text-[#315c42]">
+        <Link href="/" className="text-sm font-bold text-[#756A8A]">
           ← На головну
         </Link>
         <form
           onSubmit={login}
-          className="mt-5 rounded-3xl border border-[#ded8ca] bg-white p-8 shadow-xl shadow-[#554d3d]/5"
+          className="mt-5 rounded-3xl border border-[#E5DFE9] bg-[#FFFDFF] p-8 shadow-xl shadow-[#6C6570]/5"
         >
           <BrandMark className="h-12 w-12" />
-          <h1 className="mt-6 font-serif text-4xl text-[#28251f]">
+          <h1 className="mt-6 font-serif text-4xl text-[#35313B]">
             Вхід до адмінки
           </h1>
-          <p className="mt-2 text-sm text-[#716b61]">
+          <p className="mt-2 text-sm text-[#77717D]">
             Увійдіть під обліковим записом адміністратора.
           </p>
           <label className="mt-7 block text-sm font-bold">
@@ -49,7 +49,7 @@ export default function LoginPage() {
               required
               type="email"
               name="email"
-              className="mt-2 w-full rounded-xl border border-[#d8d1c3] px-4 py-3 font-normal outline-none focus:border-[#315c42]"
+              className="mt-2 w-full rounded-xl border border-[#E5DFE9] px-4 py-3 font-normal outline-none focus:border-[#756A8A]"
             />
           </label>
           <label className="mt-5 block text-sm font-bold">
@@ -58,7 +58,7 @@ export default function LoginPage() {
               required
               type="password"
               name="password"
-              className="mt-2 w-full rounded-xl border border-[#d8d1c3] px-4 py-3 font-normal outline-none focus:border-[#315c42]"
+              className="mt-2 w-full rounded-xl border border-[#E5DFE9] px-4 py-3 font-normal outline-none focus:border-[#756A8A]"
             />
           </label>
           {error && (
@@ -68,7 +68,7 @@ export default function LoginPage() {
           )}
           <button
             disabled={loading}
-            className="mt-6 w-full rounded-full bg-[#315c42] py-3.5 text-sm font-bold text-white disabled:opacity-60"
+            className="mt-6 w-full rounded-full bg-[#756A8A] py-3.5 text-sm font-bold text-white disabled:opacity-60"
           >
             {loading ? "Входимо…" : "Увійти"}
           </button>

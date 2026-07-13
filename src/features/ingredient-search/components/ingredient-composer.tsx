@@ -89,9 +89,9 @@ export default function IngredientComposer({
           {items.map((item, index) => (
             <div
               key={`${item.name}-${index}`}
-              className="grid grid-cols-[minmax(0,1fr)_72px_72px_34px] items-center gap-2 rounded-xl bg-[#eef4ef] p-2 text-[#315c42]"
+              className="grid grid-cols-[minmax(0,1fr)_72px_72px_34px] items-center gap-2 rounded-xl bg-[#F1EDF5] p-2 text-[#756A8A] max-[450px]:grid-cols-[minmax(0,1fr)_88px_34px] max-[450px]:gap-y-2 max-[450px]:p-2.5"
             >
-              <span className="min-w-0 truncate pl-2 text-sm font-semibold">
+              <span className="min-w-0 truncate pl-2 text-sm font-semibold max-[450px]:col-span-2 max-[450px]:col-start-1 max-[450px]:row-start-1 max-[450px]:pr-2">
                 {item.name}
               </span>
               <input
@@ -104,16 +104,18 @@ export default function IngredientComposer({
                 }
                 placeholder="К-сть"
                 aria-label={`Кількість: ${item.name}`}
-                className="h-9 min-w-0 rounded-lg border border-[#cdd9cf] bg-white px-2 text-sm text-[#28251f] outline-none focus:border-[#315c42] focus:ring-2 focus:ring-[#315c42]/10"
+                className="h-9 min-w-0 rounded-lg border border-[#DDD6E3] bg-[#FFFDFF] px-2 text-sm text-[#35313B] outline-none focus:border-[#756A8A] focus:ring-2 focus:ring-[#756A8A]/10 max-[450px]:col-start-1 max-[450px]:row-start-2"
               />
-              <CustomSelect
-                compact
-                label={`Одиниця: ${item.name}`}
-                name={`unit-${index}`}
-                options={unitOptions}
-                value={item.unit}
-                onChange={(unit) => updateItem(index, { unit })}
-              />
+              <div className="max-[450px]:col-start-2 max-[450px]:row-start-2">
+                <CustomSelect
+                  compact
+                  label={`Одиниця: ${item.name}`}
+                  name={`unit-${index}`}
+                  options={unitOptions}
+                  value={item.unit}
+                  onChange={(unit) => updateItem(index, { unit })}
+                />
+              </div>
               <button
                 type="button"
                 onClick={() =>
@@ -124,7 +126,7 @@ export default function IngredientComposer({
                   )
                 }
                 aria-label={`Видалити ${item.name}`}
-                className="grid h-8 w-8 place-items-center rounded-full text-lg text-[#718175] transition hover:bg-white hover:text-[#b55d3a] active:scale-90"
+                className="grid h-8 w-8 place-items-center rounded-full text-lg text-[#7D7484] transition hover:bg-[#FFFDFF] hover:text-[#B58FA3] active:scale-90 max-[450px]:col-start-3 max-[450px]:row-start-1"
               >
                 ×
               </button>
@@ -143,11 +145,11 @@ export default function IngredientComposer({
               : "Почніть писати: курка, кабачок…"
           }
           aria-label="Знайти продукт"
-          className="h-13 w-full rounded-xl border border-transparent bg-white px-4 text-base text-[#28251f] outline-none transition placeholder:text-[#aaa398] focus:border-[#b7cbbd] focus:ring-4 focus:ring-white/10"
+          className="h-13 w-full rounded-xl border border-transparent bg-[#FFFDFF] px-4 text-base text-[#35313B] outline-none transition placeholder:text-[#AAA2AE] focus:border-[#D3C9DB] focus:ring-4 focus:ring-white/10"
         />
         {suggestions.length > 0 && (
-          <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 overflow-hidden rounded-2xl border border-[#ded8ca] bg-[#fffdf8] p-2 shadow-[0_18px_45px_rgba(20,40,28,.22)]">
-            <p className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[.16em] text-[#8a8275]">
+          <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 overflow-hidden rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] p-2 shadow-[0_18px_45px_rgba(20,40,28,.22)]">
+            <p className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[.16em] text-[#847D89]">
               Оберіть продукт
             </p>
             {suggestions.map((suggestion) => (
@@ -155,7 +157,7 @@ export default function IngredientComposer({
                 key={suggestion}
                 type="button"
                 onClick={() => addItem(suggestion)}
-                className="flex min-h-10 w-full items-center justify-between rounded-xl px-3 text-left text-sm text-[#49443c] transition hover:bg-[#e7f0e9] hover:text-[#315c42]"
+                className="flex min-h-10 w-full items-center justify-between rounded-xl px-3 text-left text-sm text-[#504A55] transition hover:bg-[#EEEAF4] hover:text-[#756A8A]"
               >
                 {suggestion}
                 <span aria-hidden="true">＋</span>

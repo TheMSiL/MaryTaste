@@ -45,7 +45,7 @@ export default function SearchResults({
     <section className="mx-auto max-w-360 px-5 pb-20 lg:px-10">
       <div className="flex items-end justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[.2em] text-[#b55d3a]">
+          <p className="text-xs font-bold uppercase tracking-[.2em] text-[#B58FA3]">
             Перевірено за вашими продуктами
           </p>
           <h2 className="mt-2 font-serif text-4xl">Рецепти MaryTaste</h2>
@@ -59,7 +59,7 @@ export default function SearchResults({
           {[1, 2].map((item) => (
             <div
               key={item}
-              className="h-52 animate-pulse rounded-3xl bg-white"
+              className="h-52 animate-pulse rounded-3xl bg-[#FFFDFF]"
             />
           ))}
         </div>
@@ -80,9 +80,9 @@ export default function SearchResults({
             }) => (
               <article
                 key={recipe.id}
-                className="grid overflow-hidden rounded-3xl border border-[#ded8ca] bg-white sm:grid-cols-[180px_1fr]"
+                className="grid overflow-hidden rounded-3xl border border-[#E5DFE9] bg-[#FFFDFF] sm:grid-cols-[180px_1fr]"
               >
-                <div className="relative min-h-44 bg-[#e9dfca]">
+                <div className="relative min-h-44 bg-[#F0EBF3]">
                   {recipe.image_url && (
                     <Image
                       src={recipe.image_url}
@@ -94,7 +94,7 @@ export default function SearchResults({
                   )}
                 </div>
                 <div className="p-5">
-                  <p className="text-xs font-bold text-[#315c42]">
+                  <p className="text-xs font-bold text-[#756A8A]">
                     Є {found} з {total} інгредієнтів
                   </p>
                   <h3 className="mt-1 font-serif text-2xl">{recipe.title}</h3>
@@ -102,7 +102,7 @@ export default function SearchResults({
                     {matchedIngredients.slice(0, 3).map((ingredient) => (
                       <span
                         key={`matched-${ingredient}`}
-                        className="rounded-full bg-[#e7f0e9] px-2.5 py-1 text-[#315c42]"
+                        className="rounded-full bg-[#EEEAF4] px-2.5 py-1 text-[#756A8A]"
                       >
                         ✓ {ingredient}
                       </span>
@@ -114,21 +114,21 @@ export default function SearchResults({
                       .map((ingredient) => (
                         <span
                           key={`missing-${ingredient}`}
-                          className="rounded-full bg-[#f6ece6] px-2.5 py-1 text-[#9a5633]"
+                          className="rounded-full bg-[#F5EAF0] px-2.5 py-1 text-[#916B7D]"
                         >
                           − {ingredient}
                         </span>
                       ))}
                   </div>
                   {missingIngredients.length === 0 && ratio < 1 && (
-                    <p className="mt-3 rounded-xl bg-[#faf1e9] px-3 py-2.5 text-sm leading-5 text-[#75442f]">
+                    <p className="mt-3 rounded-xl bg-[#F6EDF2] px-3 py-2.5 text-sm leading-5 text-[#765465]">
                       Усі продукти є, але кількості може не вистачити. Перевірте
                       точну кількість порцій у рецепті.
                     </p>
                   )}
                   <Link
                     href={`/recipes/${recipe.id}`}
-                    className="group mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#315c42]"
+                    className="group mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#756A8A]"
                   >
                     Відкрити рецепт
                     <TransitionArrow />
@@ -139,20 +139,20 @@ export default function SearchResults({
           )}
         </div>
       ) : (
-        <div className="mt-6 rounded-3xl border border-dashed border-[#cfc7b8] p-10 text-center text-[#716b61]">
+        <div className="mt-6 rounded-3xl border border-dashed border-[#DDD6E2] p-10 text-center text-[#77717D]">
           У колекції MaryTaste збігів поки немає.
         </div>
       )}
 
-      <div className="mt-14 border-t border-[#ded8ca] pt-10">
+      <div className="mt-14 border-t border-[#E5DFE9] pt-10">
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[.2em] text-[#8a8275]">
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-[#847D89]">
               Ідеї з відкритої бази TheMealDB
             </p>
             <h2 className="mt-2 font-serif text-3xl">Ще можна спробувати</h2>
           </div>
-          <p className="max-w-lg rounded-xl bg-[#fff0df] px-4 py-3 text-sm font-medium text-[#81502f]">
+          <p className="max-w-lg rounded-xl bg-[#F6EDF2] px-4 py-3 text-sm font-medium text-[#765465]">
             ⚠ Не рецепти MaryTaste. Дані не перевірені — готуйте з обережністю.
           </p>
         </div>
@@ -161,7 +161,7 @@ export default function SearchResults({
             {[1, 2, 3, 4].map((x) => (
               <div
                 key={x}
-                className="h-72 animate-pulse rounded-2xl bg-white"
+                className="h-72 animate-pulse rounded-2xl bg-[#FFFDFF]"
               />
             ))}
           </div>
@@ -174,7 +174,7 @@ export default function SearchResults({
             {external.map((meal) => (
               <article
                 key={meal.idMeal}
-                className="overflow-hidden rounded-2xl border border-[#dfd5c6] bg-white"
+                className="overflow-hidden rounded-2xl border border-[#E7DFE9] bg-[#FFFDFF]"
               >
                 <div className="relative aspect-4/3">
                   <Image
@@ -187,7 +187,7 @@ export default function SearchResults({
                   />
                 </div>
                 <div className="p-4">
-                  <span className="rounded-full bg-[#fff0df] px-2.5 py-1 text-[10px] font-bold uppercase text-[#9a5633]">
+                  <span className="rounded-full bg-[#F6EDF2] px-2.5 py-1 text-[10px] font-bold uppercase text-[#916B7D]">
                     Зовнішній рецепт
                   </span>
                   <h3 className="mt-3 font-serif text-xl leading-tight">
@@ -197,7 +197,7 @@ export default function SearchResults({
                     href={`https://www.themealdb.com/meal/${meal.idMeal}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="group mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#315c42]"
+                    className="group mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#756A8A]"
                   >
                     Дивитися на TheMealDB
                     <TransitionArrow external />
@@ -207,7 +207,7 @@ export default function SearchResults({
             ))}
           </div>
         ) : (
-          <p className="mt-6 rounded-2xl bg-white p-6 text-[#716b61]">
+          <p className="mt-6 rounded-2xl bg-[#FFFDFF] p-6 text-[#77717D]">
             Для вказаних продуктів зовнішніх рецептів не знайдено.
           </p>
         )}

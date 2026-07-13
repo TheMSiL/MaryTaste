@@ -19,6 +19,7 @@ import type { ExternalMeal, Recipe } from "../types";
 import SearchHero from "./search-hero";
 import SearchResults from "./search-results";
 import SiteHeader from "./site-header";
+import Toast, { type ToastMessage } from "@/components/ui/toast";
 
 export default function IngredientSearchPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -31,6 +32,8 @@ export default function IngredientSearchPage() {
   const [recipesError, setRecipesError] = useState("");
   const [inputWarning, setInputWarning] = useState("");
   const searchRequestRef = useRef(0);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
+  const dismissToast = useCallback(() => setToast(null), []);
 
   useEffect(() => {
     const savedInput =
@@ -78,15 +81,32 @@ export default function IngredientSearchPage() {
     if (!trimmedInput) return;
 
     const requestId = ++searchRequestRef.current;
+    setToast({
+      id: Date.now(),
+      text: "Оновлюємо результати…",
+      persistent: true,
+    });
     setExternalLoading(true);
     try {
       const meals = await fetchExternalMeals(trimmedInput);
-      if (requestId === searchRequestRef.current) setExternal(meals);
+      if (requestId === searchRequestRef.current) {
+        setExternal(meals);
+        setToast({
+          id: Date.now(),
+          text: "Результати оновлено",
+          tone: "success",
+        });
+      }
     } catch (error) {
       if (requestId !== searchRequestRef.current) return;
       console.error("External recipes loading error:", error);
       setExternalError("Зовнішня база тимчасово недоступна. Спробуйте ще раз.");
       setExternal([]);
+      setToast({
+        id: Date.now(),
+        text: "Не вдалося оновити зовнішні результати",
+        tone: "error",
+      });
     } finally {
       if (requestId === searchRequestRef.current) setExternalLoading(false);
     }
@@ -113,7 +133,7 @@ export default function IngredientSearchPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f8f5ee] text-[#28251f]">
+    <main className="min-h-screen bg-[#FAF8FC] text-[#35313B]">
       <SiteHeader />
       <SearchHero
         input={input}
@@ -122,9 +142,6 @@ export default function IngredientSearchPage() {
           if (inputWarning) setInputWarning("");
         }}
         warning={inputWarning}
-        autoUpdatePending={
-          hasCompleteIngredientQuantities(input) && input.trim() !== search
-        }
         onClear={() => {
           searchRequestRef.current++;
           setInput("");
@@ -132,9 +149,11 @@ export default function IngredientSearchPage() {
           setExternal([]);
           setExternalError("");
           setInputWarning("");
+          setToast(null);
         }}
         onSubmit={submit}
       />
+      <Toast toast={toast} onDismiss={dismissToast} />
 
       <SearchResults
         search={search}

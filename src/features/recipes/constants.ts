@@ -9,5 +9,11 @@ export const categories = [
 
 export const difficulties = ["Легко", "Середньо", "Складно"] as const;
 
-export const categoryOptions = categories.map((value) => ({ value, label: value }));
-export const difficultyOptions = difficulties.map((value) => ({ value, label: value }));
+export const categoryOptions = categories.map((value) => ({
+  value,
+  label: value,
+}));
+export const difficultyOptions = difficulties.map((value) => ({
+  value,
+  label: value,
+}));

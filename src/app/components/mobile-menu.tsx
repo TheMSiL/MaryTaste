@@ -40,7 +40,7 @@ export default function MobileMenu() {
         aria-expanded={open}
         aria-controls="mobile-navigation"
         onClick={() => setOpen((current) => !current)}
-        className="grid h-11 w-11 place-items-center rounded-full border border-[#315c42]/35 bg-white/60 text-[#315c42] transition active:scale-95"
+        className="grid h-11 w-11 place-items-center rounded-full border border-[#756A8A]/35 bg-white/60 text-[#756A8A] transition active:scale-95"
       >
         <span className="relative block h-4 w-5" aria-hidden="true">
           <span
@@ -59,7 +59,7 @@ export default function MobileMenu() {
         <nav
           id="mobile-navigation"
           aria-label="Мобільна навігація"
-          className="absolute right-0 top-[calc(100%+12px)] z-50 w-60 overflow-hidden rounded-2xl border border-[#ded8ca] bg-[#fffdf8] p-2 shadow-[0_18px_50px_rgba(40,37,31,.18)]"
+          className="absolute right-0 top-[calc(100%+12px)] z-50 w-60 overflow-hidden rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] p-2 shadow-[0_18px_50px_rgba(40,37,31,.18)]"
         >
           {links.map((link) => {
             const active =
@@ -72,7 +72,7 @@ export default function MobileMenu() {
                 href={link.href}
                 onClick={() => setOpen(false)}
                 aria-current={active ? "page" : undefined}
-                className={`group flex min-h-12 items-center justify-between rounded-xl px-4 text-sm font-semibold transition ${active ? "bg-[#e7f0e9] text-[#315c42]" : "text-[#49443c] hover:bg-[#f3eee4]"}`}
+                className={`group flex min-h-12 items-center justify-between rounded-xl px-4 text-sm font-semibold transition ${active ? "bg-[#EEEAF4] text-[#756A8A]" : "text-[#504A55] hover:bg-[#F3EFF6]"}`}
               >
                 {link.label}
                 {active ? (

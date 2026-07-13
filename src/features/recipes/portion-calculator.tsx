@@ -40,20 +40,20 @@ export default function PortionCalculator({
   if (!ingredients.length) return null;
 
   return (
-    <section className="mt-10 overflow-hidden rounded-3xl bg-[#315c42] text-white shadow-[0_20px_55px_rgba(49,92,66,.18)]">
-      <div className="grid gap-8 p-6 md:p-8 lg:grid-cols-[.8fr_1.2fr] lg:p-10">
+    <section className="mt-10 overflow-hidden rounded-3xl bg-[#756A8A] text-white shadow-[0_20px_55px_rgba(117,106,138,.18)]">
+      <div className="grid gap-8 p-6 max-[450px]:gap-6 max-[450px]:p-4 md:p-8 lg:grid-cols-[.8fr_1.2fr] lg:p-10">
         <div>
           <p className="text-xs font-bold uppercase tracking-[.2em] text-white/60">
             Калькулятор порцій
           </p>
-          <h2 className="mt-3 font-serif text-3xl">
+          <h2 className="mt-3 font-serif text-3xl max-[450px]:text-[1.7rem]">
             Скільки вийде приготувати?
           </h2>
           <p className="mt-3 max-w-md text-sm leading-6 text-white/70">
             Вкажіть, скільки кожного продукту маєте. Розрахунок врахує
             інгредієнт, якого вистачає на найменшу кількість порцій.
           </p>
-          <div className="mt-6 min-h-24 rounded-2xl bg-white/10 p-5">
+          <div className="mt-6 min-h-24 rounded-2xl bg-white/10 p-5 max-[450px]:mt-5 max-[450px]:min-h-20 max-[450px]:p-4">
             {portions === null ? (
               <p className="text-sm leading-6 text-white/65">
                 Заповніть кількість усіх продуктів праворуч.
@@ -68,7 +68,7 @@ export default function PortionCalculator({
                 </p>
               </>
             ) : (
-              <p className="text-sm leading-6 text-[#ffd5c4]">
+              <p className="text-sm leading-6 text-[#F3DCE6]">
                 Продуктів недостатньо навіть для однієї повної порції.
               </p>
             )}
@@ -78,9 +78,9 @@ export default function PortionCalculator({
           {ingredients.map((ingredient, index) => (
             <label
               key={`${ingredient.name}-${index}`}
-              className="grid grid-cols-[minmax(0,1fr)_100px_40px] items-center gap-2 rounded-xl bg-white/10 p-2 pl-4"
+              className="grid grid-cols-[minmax(0,1fr)_100px_40px] items-center gap-2 rounded-xl bg-white/10 p-2 pl-4 max-[450px]:grid-cols-[minmax(0,1fr)_64px] max-[450px]:gap-y-2 max-[450px]:p-3"
             >
-              <span className="min-w-0 truncate text-sm font-semibold">
+              <span className="min-w-0 truncate text-sm font-semibold max-[450px]:col-span-2 max-[450px]:col-start-1 max-[450px]:row-start-1">
                 {ingredient.name}
               </span>
               <input
@@ -95,9 +95,9 @@ export default function PortionCalculator({
                   }))
                 }
                 placeholder="К-сть"
-                className="h-10 min-w-0 rounded-lg border border-white/20 bg-white px-3 text-sm text-[#28251f] outline-none focus:ring-4 focus:ring-white/15"
+                className="h-10 min-w-0 rounded-lg border border-white/20 bg-[#FFFDFF] px-3 text-sm text-[#35313B] outline-none focus:ring-4 focus:ring-white/15 max-[450px]:col-start-1 max-[450px]:row-start-2"
               />
-              <span className="text-center text-xs font-bold text-white/65">
+              <span className="text-center text-xs font-bold text-white/65 max-[450px]:col-start-2 max-[450px]:row-start-2">
                 {ingredient.unit}
               </span>
             </label>

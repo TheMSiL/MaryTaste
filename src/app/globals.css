@@ -25,9 +25,10 @@ button {
   cursor: pointer;
 }
 
-.admin-form input:not([type="file"]):not([type="checkbox"]):not([type="hidden"]),
+.admin-form
+  input:not([type="file"]):not([type="checkbox"]):not([type="hidden"]),
 .admin-form textarea {
-  border: 1px solid #d8d1c3;
+  border: 1px solid #e5dfe9;
   background: #fff;
   outline: none;
   transition:
@@ -36,23 +37,26 @@ button {
     transform 180ms ease;
 }
 
-.admin-form input:not([type="file"]):not([type="checkbox"]):not([type="hidden"]):hover,
+.admin-form
+  input:not([type="file"]):not([type="checkbox"]):not([type="hidden"]):hover,
 .admin-form textarea:hover {
-  border-color: #aaa293;
+  border-color: #aaa399;
 }
 
-.admin-form input:not([type="file"]):not([type="checkbox"]):not([type="hidden"]):focus,
+.admin-form
+  input:not([type="file"]):not([type="checkbox"]):not([type="hidden"]):focus,
 .admin-form textarea:focus {
-  border-color: #315c42;
+  border-color: #756a8a;
   box-shadow: 0 0 0 4px rgb(49 92 66 / 10%);
 }
 
-.admin-form input:not([type="file"]):not([type="checkbox"]):not([type="hidden"]):active,
+.admin-form
+  input:not([type="file"]):not([type="checkbox"]):not([type="hidden"]):active,
 .admin-form textarea:active {
   transform: translateY(1px);
 }
 ::selection {
-  background: #315c42;
+  background: #756a8a;
   color: white;
 }
 

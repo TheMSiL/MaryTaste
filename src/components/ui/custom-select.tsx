@@ -71,14 +71,14 @@ export default function CustomSelect({
         aria-expanded={open}
         aria-haspopup="listbox"
         onClick={() => setOpen((current) => !current)}
-        className={`flex w-full items-center justify-between border bg-white text-left font-normal outline-none transition hover:border-[#aaa293] active:translate-y-px ${compact ? "min-h-9 rounded-lg px-2.5 text-sm" : "min-h-12 rounded-xl px-4"} ${open ? "border-[#315c42] ring-4 ring-[#315c42]/10" : "border-[#d8d1c3]"}`}
+        className={`flex w-full items-center justify-between border bg-[#FFFDFF] text-left font-normal outline-none transition hover:border-[#AAA2AE] active:translate-y-px ${compact ? "min-h-9 rounded-lg px-2.5 text-sm" : "min-h-12 rounded-xl px-4"} ${open ? "border-[#756A8A] ring-4 ring-[#756A8A]/10" : "border-[#E5DFE9]"}`}
       >
-        <span className={selected ? "text-[#28251f]" : "text-[#8a8275]"}>
+        <span className={selected ? "text-[#35313B]" : "text-[#847D89]"}>
           {selected?.label || placeholder}
         </span>
         <span
           aria-hidden="true"
-          className={`text-xs text-[#315c42] transition-transform ${open ? "rotate-180" : ""}`}
+          className={`text-xs text-[#756A8A] transition-transform ${open ? "rotate-180" : ""}`}
         >
           ▼
         </span>
@@ -98,7 +98,7 @@ export default function CustomSelect({
           id={`${id}-listbox`}
           role="listbox"
           aria-labelledby={`${id}-label`}
-          className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 max-h-64 overflow-y-auto rounded-2xl border border-[#ded8ca] bg-[#fffdf8] p-2 shadow-[0_18px_45px_rgba(40,37,31,.16)]"
+          className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 max-h-64 overflow-y-auto rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] p-2 shadow-[0_18px_45px_rgba(40,37,31,.16)]"
         >
           {options.map((option) => {
             const active = option.value === selectedValue;
@@ -109,7 +109,7 @@ export default function CustomSelect({
                 role="option"
                 aria-selected={active}
                 onClick={() => choose(option.value)}
-                className={`flex min-h-11 w-full items-center justify-between rounded-xl px-4 text-left text-sm transition ${active ? "bg-[#315c42] font-semibold text-white" : "text-[#49443c] hover:bg-[#f3eee4]"}`}
+                className={`flex min-h-11 w-full items-center justify-between rounded-xl px-4 text-left text-sm transition ${active ? "bg-[#756A8A] font-semibold text-white" : "text-[#504A55] hover:bg-[#F3EFF6]"}`}
               >
                 {option.label}
                 {active && <span aria-hidden="true">✓</span>}

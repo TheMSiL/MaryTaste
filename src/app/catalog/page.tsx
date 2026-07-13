@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase";
 import MobileMenu from "@/app/components/mobile-menu";
 import TransitionArrow from "@/components/ui/transition-arrow";
 import BrandMark from "@/components/brand-mark";
+import Toast, { type ToastMessage } from "@/components/ui/toast";
 
 const categories = [
   "Усі рецепти",
@@ -40,8 +41,10 @@ export default function Home() {
   const [active, setActive] = useState("Усі рецепти");
   const [query, setQuery] = useState("");
   const [categoryOpen, setCategoryOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(6);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
   const categoryMenuRef = useRef<HTMLDivElement>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
   const urlReadyRef = useRef(false);
   const filtered = useMemo(
     () =>
@@ -54,12 +57,46 @@ export default function Home() {
       ),
     [active, query, recipes],
   );
+  const visibleRecipes = filtered.slice(0, visibleCount);
+  const dismissToast = useCallback(() => setToast(null), []);
+
+  function selectCategory(category: string) {
+    setActive(category);
+    setVisibleCount(6);
+    setCategoryOpen(false);
+  }
 
   async function copyFilteredCatalogLink() {
-    await navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setToast({
+        id: Date.now(),
+        text: "Посилання на добірку скопійовано",
+        tone: "success",
+      });
+    } catch {
+      setToast({
+        id: Date.now(),
+        text: "Не вдалося скопіювати посилання",
+        tone: "error",
+      });
+    }
   }
+
+  useEffect(() => {
+    const target = loadMoreRef.current;
+    if (!target || visibleCount >= filtered.length) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisibleCount((current) => Math.min(current + 6, filtered.length));
+        }
+      },
+      { rootMargin: "240px" },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [filtered.length, visibleCount]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -157,14 +194,14 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#f8f5ee] text-[#28251f]">
-      <header className="border-b border-[#ded8ca] bg-[#f8f5ee]/90 backdrop-blur-lg">
+    <main className="min-h-screen bg-[#FAF8FC] text-[#35313B]">
+      <header className="border-b border-[#E5DFE9] bg-[#FAF8FC]/90 backdrop-blur-lg">
         <div className="mx-auto flex max-w-360 items-center justify-between px-4 py-4 sm:px-5 sm:py-5 lg:px-10">
           <Link href="/" className="flex items-center gap-3">
             <BrandMark />
             <span>
               <b className="block font-serif text-xl leading-5">MaryTaste</b>
-              <small className="text-[#777064]">Готуємо з любов’ю</small>
+              <small className="text-[#7E7782]">Готуємо з любов’ю</small>
             </span>
           </Link>
           <MobileMenu />
@@ -173,15 +210,15 @@ export default function Home() {
 
       <section className="mx-auto max-w-360 px-5 pb-8 pt-12 lg:px-10 lg:pt-16">
         <div className="max-w-3xl">
-          <p className="mb-4 text-xs font-bold uppercase tracking-[.25em] text-[#b55d3a]">
+          <p className="mb-4 text-xs font-bold uppercase tracking-[.25em] text-[#B58FA3]">
             Домашня колекція
           </p>
           <h1 className="font-serif text-4xl leading-[1.02] tracking-tight sm:text-5xl md:text-7xl">
             Що приготуємо
             <br />
-            <i className="font-normal text-[#315c42]">сьогодні?</i>
+            <i className="font-normal text-[#756A8A]">сьогодні?</i>
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-8 text-[#716b61]">
+          <p className="mt-6 max-w-xl text-lg leading-8 text-[#77717D]">
             Перевірені рецепти для теплих сніданків, сімейних вечерь та
             особливих вечорів.
           </p>
@@ -192,20 +229,23 @@ export default function Home() {
           </span>
           <input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setVisibleCount(6);
+            }}
             placeholder="Знайти рецепт або інгредієнт..."
-            className="w-full rounded-2xl border border-[#d8d1c3] bg-white py-4 pl-14 pr-5 shadow-sm outline-none transition focus:border-[#315c42] focus:ring-4 focus:ring-[#315c42]/10"
+            className="w-full rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] py-4 pl-14 pr-5 shadow-sm outline-none transition focus:border-[#756A8A] focus:ring-4 focus:ring-[#756A8A]/10"
           />
         </div>
       </section>
 
       <div className="mx-auto grid max-w-360 gap-7 px-4 pb-14 sm:px-5 lg:grid-cols-[230px_1fr] lg:gap-9 lg:px-10 lg:pb-20">
         <aside className="min-w-0 lg:overflow-visible">
-          <p className="mb-4 hidden text-xs font-bold uppercase tracking-[.18em] text-[#8a8275] lg:block">
+          <p className="mb-4 hidden text-xs font-bold uppercase tracking-[.18em] text-[#847D89] lg:block">
             Категорії
           </p>
           <div ref={categoryMenuRef} className="relative lg:hidden">
-            <span className="mb-2 block text-[11px] font-bold uppercase tracking-[.18em] text-[#8a8275]">
+            <span className="mb-2 block text-[11px] font-bold uppercase tracking-[.18em] text-[#847D89]">
               Фільтр за категорією
             </span>
             <button
@@ -213,10 +253,10 @@ export default function Home() {
               aria-expanded={categoryOpen}
               aria-controls="mobile-category-menu"
               onClick={() => setCategoryOpen((current) => !current)}
-              className={`flex min-h-14 w-full items-center gap-3 rounded-2xl border bg-white px-4 text-left shadow-[0_6px_20px_rgba(70,60,40,.06)] transition ${categoryOpen ? "border-[#315c42] ring-4 ring-[#315c42]/10" : "border-[#d8d1c3]"}`}
+              className={`flex min-h-14 w-full items-center gap-3 rounded-2xl border bg-[#FFFDFF] px-4 text-left shadow-[0_6px_20px_rgba(70,60,40,.06)] transition ${categoryOpen ? "border-[#756A8A] ring-4 ring-[#756A8A]/10" : "border-[#E5DFE9]"}`}
             >
               <span
-                className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#e7f0e9] text-[#315c42]"
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#EEEAF4] text-[#756A8A]"
                 aria-hidden="true"
               >
                 ◇
@@ -225,7 +265,7 @@ export default function Home() {
                 {active}
               </span>
               <span
-                className={`text-xs text-[#315c42] transition-transform duration-200 ${categoryOpen ? "rotate-180" : ""}`}
+                className={`text-xs text-[#756A8A] transition-transform duration-200 ${categoryOpen ? "rotate-180" : ""}`}
                 aria-hidden="true"
               >
                 ▼
@@ -236,7 +276,7 @@ export default function Home() {
                 id="mobile-category-menu"
                 role="listbox"
                 aria-label="Категорії рецептів"
-                className="absolute left-0 right-0 top-[calc(100%+8px)] z-40 max-h-72 overflow-y-auto rounded-2xl border border-[#ded8ca] bg-[#fffdf8] p-2 shadow-[0_18px_45px_rgba(40,37,31,.16)]"
+                className="absolute left-0 right-0 top-[calc(100%+8px)] z-40 max-h-72 overflow-y-auto rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] p-2 shadow-[0_18px_45px_rgba(40,37,31,.16)]"
               >
                 {categories.map((category) => (
                   <button
@@ -245,10 +285,9 @@ export default function Home() {
                     role="option"
                     aria-selected={active === category}
                     onClick={() => {
-                      setActive(category);
-                      setCategoryOpen(false);
+                      selectCategory(category);
                     }}
-                    className={`flex min-h-11 w-full items-center justify-between rounded-xl px-4 text-left text-sm transition ${active === category ? "bg-[#315c42] font-semibold text-white" : "text-[#49443c] hover:bg-[#f3eee4]"}`}
+                    className={`flex min-h-11 w-full items-center justify-between rounded-xl px-4 text-left text-sm transition ${active === category ? "bg-[#756A8A] font-semibold text-white" : "text-[#504A55] hover:bg-[#F3EFF6]"}`}
                   >
                     {category}
                     {active === category && <span aria-hidden="true">✓</span>}
@@ -261,17 +300,17 @@ export default function Home() {
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() => setActive(category)}
-                className={`whitespace-nowrap rounded-xl px-4 py-3 text-left text-sm font-medium transition ${active === category ? "bg-[#315c42] text-white shadow-md" : "hover:bg-white"}`}
+                onClick={() => selectCategory(category)}
+                className={`whitespace-nowrap rounded-xl px-4 py-3 text-left text-sm font-medium transition ${active === category ? "bg-[#756A8A] text-white shadow-md" : "hover:bg-[#FFFDFF]"}`}
               >
                 {category}
               </button>
             ))}
           </div>
-          <div className="mt-10 hidden rounded-2xl bg-[#e9dfca] p-5 lg:block">
+          <div className="mt-10 hidden rounded-2xl bg-[#F0EBF3] p-5 lg:block">
             <span className="text-2xl">☼</span>
             <p className="mt-3 font-serif text-lg">Сімейна кухня</p>
-            <p className="mt-1 text-sm leading-6 text-[#716b61]">
+            <p className="mt-1 text-sm leading-6 text-[#77717D]">
               Зберігаємо улюблені смаки та історії.
             </p>
           </div>
@@ -280,7 +319,7 @@ export default function Home() {
         <section className="min-w-0">
           <div className="mb-6 flex items-end justify-between">
             <div>
-              <p className="text-sm text-[#8a8275]">
+              <p className="text-sm text-[#847D89]">
                 Знайдено: {filtered.length}
               </p>
               <h2 className="mt-1 font-serif text-3xl">{active}</h2>
@@ -288,9 +327,9 @@ export default function Home() {
             <button
               type="button"
               onClick={() => void copyFilteredCatalogLink()}
-              className="rounded-full border border-[#315c42]/25 bg-white px-4 py-2 text-xs font-bold text-[#315c42] transition hover:border-[#315c42] hover:bg-[#e7f0e9]"
+              className="rounded-full border border-[#756A8A]/25 bg-[#FFFDFF] px-4 py-2 text-xs font-bold text-[#756A8A] transition hover:border-[#756A8A] hover:bg-[#EEEAF4]"
             >
-              {copied ? "Посилання скопійовано" : "Поділитися"}
+              Поділитися
             </button>
           </div>
           {loadError && (
@@ -303,16 +342,16 @@ export default function Home() {
               {[1, 2, 3].map((item) => (
                 <div
                   key={item}
-                  className="h-107.5 animate-pulse rounded-[22px] bg-white"
+                  className="h-107.5 animate-pulse rounded-[22px] bg-[#FFFDFF]"
                 />
               ))}
             </div>
           ) : filtered.length ? (
             <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {filtered.map((recipe) => (
+              {visibleRecipes.map((recipe) => (
                 <article
                   key={recipe.id}
-                  className="group overflow-hidden rounded-[22px] border border-[#ded8ca] bg-white shadow-[0_8px_30px_rgba(70,60,40,.06)] transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+                  className="group overflow-hidden rounded-[22px] border border-[#E5DFE9] bg-[#FFFDFF] shadow-[0_8px_30px_rgba(70,60,40,.06)] transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                 >
                   <div className="relative aspect-4/3 overflow-hidden">
                     <Image
@@ -324,29 +363,29 @@ export default function Home() {
                       sizes="(max-width: 639px) 100vw, (max-width: 1279px) 50vw, 33vw"
                       className="object-cover transition duration-700 group-hover:scale-105"
                     />
-                    <span className="absolute left-4 top-4 rounded-full bg-[#f8f5ee]/90 px-3 py-1.5 text-xs font-semibold backdrop-blur">
+                    <span className="absolute left-4 top-4 rounded-full bg-[#FAF8FC]/90 px-3 py-1.5 text-xs font-semibold backdrop-blur">
                       {recipe.category}
                     </span>
                     {recipe.isFavorite && (
-                      <span className="absolute right-4 top-4 rounded-full bg-[#b55d3a] px-3 py-1.5 text-xs font-bold text-white">
+                      <span className="absolute right-4 top-4 rounded-full bg-[#B58FA3] px-3 py-1.5 text-xs font-bold text-white">
                         Улюблене
                       </span>
                     )}
                   </div>
                   <div className="p-5">
-                    <div className="mb-3 flex gap-4 text-xs font-medium text-[#80796e]">
+                    <div className="mb-3 flex gap-4 text-xs font-medium text-[#7E7782]">
                       <span>◷ {recipe.time}</span>
                       <span>◇ {recipe.difficulty}</span>
                     </div>
                     <h3 className="font-serif text-2xl leading-tight">
                       {recipe.title}
                     </h3>
-                    <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#716b61]">
+                    <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#77717D]">
                       {recipe.description}
                     </p>
                     <Link
                       href={`/recipes/${recipe.id}`}
-                      className="group mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#315c42]"
+                      className="group mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#756A8A]"
                     >
                       Переглянути рецепт
                       <TransitionArrow />
@@ -354,18 +393,27 @@ export default function Home() {
                   </div>
                 </article>
               ))}
+              {visibleCount < filtered.length && (
+                <div
+                  ref={loadMoreRef}
+                  className="col-span-full flex h-12 items-center justify-center text-xs text-[#847D89]"
+                >
+                  Завантажуємо ще рецепти…
+                </div>
+              )}
             </div>
           ) : (
-            <div className="rounded-3xl border border-dashed border-[#cfc7b8] py-20 text-center">
+            <div className="rounded-3xl border border-dashed border-[#DDD6E2] py-20 text-center">
               <div className="text-4xl">⌕</div>
               <h3 className="mt-4 font-serif text-2xl">Нічого не знайдено</h3>
-              <p className="mt-2 text-[#716b61]">
+              <p className="mt-2 text-[#77717D]">
                 Спробуйте змінити запит або вибрати іншу категорію.
               </p>
             </div>
           )}
         </section>
       </div>
+      <Toast toast={toast} onDismiss={dismissToast} />
     </main>
   );
 }

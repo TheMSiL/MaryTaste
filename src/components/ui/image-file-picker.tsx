@@ -38,7 +38,7 @@ export default function ImageFilePicker({
           setDragging(false);
           acceptFile(event.dataTransfer.files[0]);
         }}
-        className={`group flex min-h-32 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-5 py-6 text-center transition ${dragging ? "border-[#315c42] bg-[#e7f0e9]" : "border-[#d8d1c3] bg-[#faf8f3] hover:border-[#315c42]/60 hover:bg-[#f5f7f2]"}`}
+        className={`group flex min-h-32 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-5 py-6 text-center transition ${dragging ? "border-[#756A8A] bg-[#EEEAF4]" : "border-[#E5DFE9] bg-[#FCFAFD] hover:border-[#756A8A]/60 hover:bg-[#F8F5FA]"}`}
       >
         <input
           id={id}
@@ -47,24 +47,24 @@ export default function ImageFilePicker({
           onChange={(event) => acceptFile(event.target.files?.[0])}
           className="sr-only"
         />
-        <span className="grid h-10 w-10 place-items-center rounded-full bg-[#e7f0e9] text-xl text-[#315c42] transition group-hover:scale-105">
+        <span className="grid h-10 w-10 place-items-center rounded-full bg-[#EEEAF4] text-xl text-[#756A8A] transition group-hover:scale-105">
           ↑
         </span>
         {file ? (
           <>
-            <span className="mt-3 max-w-full truncate text-sm font-bold text-[#315c42]">
+            <span className="mt-3 max-w-full truncate text-sm font-bold text-[#756A8A]">
               {file.name}
             </span>
-            <span className="mt-1 text-xs text-[#80796e]">
+            <span className="mt-1 text-xs text-[#7E7782]">
               Натисніть, щоб замінити фото
             </span>
           </>
         ) : (
           <>
-            <span className="mt-3 text-sm font-bold text-[#315c42]">
+            <span className="mt-3 text-sm font-bold text-[#756A8A]">
               Обрати або перетягнути фото
             </span>
-            <span className="mt-1 text-xs text-[#80796e]">{hint}</span>
+            <span className="mt-1 text-xs text-[#7E7782]">{hint}</span>
           </>
         )}
       </label>

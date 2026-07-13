@@ -174,32 +174,32 @@ export default function AdminPage() {
   }
   if (!ready)
     return (
-      <main className="grid min-h-screen place-items-center bg-[#f8f5ee]">
-        <p className="animate-pulse text-[#716b61]">Перевіряємо доступ…</p>
+      <main className="grid min-h-screen place-items-center bg-[#FAF8FC]">
+        <p className="animate-pulse text-[#77717D]">Перевіряємо доступ…</p>
       </main>
     );
 
   return (
-    <main className="min-h-screen bg-[#f8f5ee] text-[#28251f]">
-      <header className="border-b border-[#ded8ca] bg-white">
+    <main className="min-h-screen bg-[#FAF8FC] text-[#35313B]">
+      <header className="border-b border-[#E5DFE9] bg-[#FFFDFF]">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-5 sm:py-5">
           <Link
             href="/"
-            className="group inline-flex items-center gap-3 text-[#315c42]"
+            className="group inline-flex items-center gap-3 text-[#756A8A]"
           >
             <TransitionArrow back />
             <span>
-              <b className="block font-serif text-base leading-5 text-[#28251f] sm:text-xl">
+              <b className="block font-serif text-base leading-5 text-[#35313B] sm:text-xl">
                 MaryTaste
               </b>
-              <small className="hidden text-[11px] text-[#80796e] sm:block">
+              <small className="hidden text-[11px] text-[#7E7782] sm:block">
                 Повернутися на сайт
               </small>
             </span>
           </Link>
           <button
             onClick={logout}
-            className="shrink-0 rounded-full bg-[#e7f0e9] px-4 py-2 text-xs font-bold text-[#315c42]"
+            className="shrink-0 rounded-full bg-[#EEEAF4] px-4 py-2 text-xs font-bold text-[#756A8A]"
           >
             Вийти
           </button>
@@ -207,7 +207,7 @@ export default function AdminPage() {
       </header>
       <div className="mx-auto grid max-w-6xl gap-7 px-4 py-7 sm:px-5 sm:py-10 lg:grid-cols-[240px_1fr] lg:gap-8">
         <aside className="min-w-0 overflow-hidden lg:overflow-visible">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#8a8275]">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#847D89]">
             Керування
           </p>
           <nav className="mt-4 flex sm:flex-row flex-col max-w-full gap-2 pb-2 lg:block lg:space-y-2 lg:overflow-visible lg:pb-0">
@@ -221,7 +221,7 @@ export default function AdminPage() {
               <button
                 key={item.id}
                 onClick={() => openTab(item.id)}
-                className={`w-auto shrink-0 whitespace-nowrap rounded-xl px-4 py-3 text-left text-sm lg:w-full ${tab === item.id ? "bg-[#315c42] font-semibold text-white" : "hover:bg-white"}`}
+                className={`w-auto shrink-0 whitespace-nowrap rounded-xl px-4 py-3 text-left text-sm lg:w-full ${tab === item.id ? "bg-[#756A8A] font-semibold text-white" : "hover:bg-[#FFFDFF]"}`}
               >
                 {item.label}
               </button>
@@ -231,18 +231,18 @@ export default function AdminPage() {
         <section className="min-w-0">
           {tab === "new" ? (
             <>
-              <p className="text-xs font-bold uppercase tracking-[.2em] text-[#b55d3a]">
+              <p className="text-xs font-bold uppercase tracking-[.2em] text-[#B58FA3]">
                 Новий запис
               </p>
               <h1 className="mt-2 font-serif text-3xl sm:text-4xl">
                 Додати рецепт
               </h1>
-              <p className="mt-3 text-sm leading-6 text-[#716b61] sm:text-base">
+              <p className="mt-3 text-sm leading-6 text-[#77717D] sm:text-base">
                 Заповніть картку — рецепт з’явиться в загальній колекції.
               </p>
               <form
                 onSubmit={submit}
-                className="admin-form mt-6 min-w-0 space-y-6 overflow-visible rounded-2xl border border-[#ded8ca] bg-white p-4 shadow-sm sm:mt-8 sm:rounded-3xl sm:p-6 md:p-9"
+                className="admin-form mt-6 min-w-0 space-y-6 overflow-visible rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] p-4 shadow-sm sm:mt-8 sm:rounded-3xl sm:p-6 md:p-9"
               >
                 <ImageFilePicker file={file} onChange={setFile} />
                 <label className="block">
@@ -252,7 +252,7 @@ export default function AdminPage() {
                   <input
                     required
                     name="title"
-                    className="w-full rounded-xl border border-[#d8d1c3] px-4 py-3 outline-none focus:border-[#315c42]"
+                    className="w-full rounded-xl border border-[#E5DFE9] px-4 py-3 outline-none focus:border-[#756A8A]"
                     placeholder="Наприклад, вишневий пиріг"
                   />
                 </label>
@@ -266,7 +266,7 @@ export default function AdminPage() {
                       min="1"
                       type="number"
                       name="cooking_time"
-                      className="w-full rounded-xl border border-[#d8d1c3] px-4 py-3"
+                      className="w-full rounded-xl border border-[#E5DFE9] px-4 py-3"
                     />
                   </label>
                   <label>
@@ -279,7 +279,7 @@ export default function AdminPage() {
                       type="number"
                       name="servings"
                       defaultValue="4"
-                      className="w-full rounded-xl border border-[#d8d1c3] px-4 py-3"
+                      className="w-full rounded-xl border border-[#E5DFE9] px-4 py-3"
                     />
                   </label>
                 </div>
@@ -298,17 +298,17 @@ export default function AdminPage() {
                     defaultValue="Легко"
                   />
                 </div>
-                <label className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-[#e0d6c5] bg-[#faf6ed] p-4">
+                <label className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-[#E7DFE8] bg-[#F6F0F5] p-4">
                   <span className="min-w-0">
                     <b className="block text-sm">Позначити як улюблене</b>
-                    <small className="mt-1 block text-[#80796e]">
+                    <small className="mt-1 block text-[#7E7782]">
                       На картці з’явиться помаранчева плашка «Улюблене»
                     </small>
                   </span>
                   <input
                     type="checkbox"
                     name="is_favorite"
-                    className="h-5 w-5 shrink-0 accent-[#b55d3a]"
+                    className="h-5 w-5 shrink-0 accent-[#B58FA3]"
                   />
                 </label>
                 <label className="block">
@@ -319,14 +319,14 @@ export default function AdminPage() {
                     required
                     name="description"
                     rows={3}
-                    className="w-full resize-none rounded-xl border border-[#d8d1c3] px-4 py-3"
+                    className="w-full resize-none rounded-xl border border-[#E5DFE9] px-4 py-3"
                     placeholder="Кілька слів про страву..."
                   />
                 </label>
                 <div className="block">
                   <span className="mb-2 block text-sm font-bold">
                     Інгредієнти{" "}
-                    <small className="font-normal text-[#8a8275]">
+                    <small className="font-normal text-[#847D89]">
                       — оберіть продукт і вкажіть кількість
                     </small>
                   </span>
@@ -335,7 +335,7 @@ export default function AdminPage() {
                     name="ingredients"
                     value={ingredientsValue}
                   />
-                  <div className="rounded-2xl border border-[#d8d1c3] bg-[#faf8f3] p-3">
+                  <div className="rounded-2xl border border-[#E5DFE9] bg-[#FCFAFD] p-3">
                     <IngredientComposer
                       recipeMode
                       value={ingredientsValue}
@@ -343,7 +343,7 @@ export default function AdminPage() {
                     />
                   </div>
                   {!ingredientsValue && (
-                    <p className="mt-2 text-xs text-[#8a8275]">
+                    <p className="mt-2 text-xs text-[#847D89]">
                       Додайте щонайменше один інгредієнт.
                     </p>
                   )}
@@ -351,7 +351,7 @@ export default function AdminPage() {
                 <label className="block">
                   <span className="mb-2 block text-sm font-bold">
                     Приготування{" "}
-                    <small className="font-normal text-[#8a8275]">
+                    <small className="font-normal text-[#847D89]">
                       — кожен крок з нового рядка
                     </small>
                   </span>
@@ -359,7 +359,7 @@ export default function AdminPage() {
                     required
                     name="instructions"
                     rows={7}
-                    className="w-full resize-none rounded-xl border border-[#d8d1c3] px-4 py-3"
+                    className="w-full resize-none rounded-xl border border-[#E5DFE9] px-4 py-3"
                     placeholder="Підготуйте інгредієнти…"
                   />
                 </label>
@@ -370,7 +370,7 @@ export default function AdminPage() {
                     {message}
                   </p>
                 )}
-                <div className="flex flex-col-reverse gap-3 border-t border-[#eee9df] pt-6 sm:flex-row sm:justify-end">
+                <div className="flex flex-col-reverse gap-3 border-t border-[#F0EAF2] pt-6 sm:flex-row sm:justify-end">
                   <Link
                     href="/"
                     className="rounded-full px-5 py-3 text-center text-sm font-bold"
@@ -379,7 +379,7 @@ export default function AdminPage() {
                   </Link>
                   <button
                     disabled={saving}
-                    className="rounded-full bg-[#315c42] px-6 py-3 text-sm font-bold text-white disabled:opacity-60"
+                    className="rounded-full bg-[#756A8A] px-6 py-3 text-sm font-bold text-white disabled:opacity-60"
                   >
                     {saving ? "Зберігаємо…" : "Опублікувати рецепт"}
                   </button>
@@ -388,13 +388,13 @@ export default function AdminPage() {
             </>
           ) : tab === "recipes" ? (
             <>
-              <p className="text-xs font-bold uppercase tracking-[.2em] text-[#b55d3a]">
+              <p className="text-xs font-bold uppercase tracking-[.2em] text-[#B58FA3]">
                 Колекція
               </p>
               <h1 className="mt-2 font-serif text-3xl sm:text-4xl">
                 Усі рецепти
               </h1>
-              <p className="mt-3 text-[#716b61]">
+              <p className="mt-3 text-[#77717D]">
                 Переглядайте, редагуйте та видаляйте опубліковані рецепти.
               </p>
               {message && (
@@ -402,14 +402,14 @@ export default function AdminPage() {
                   {message}
                 </p>
               )}
-              <div className="mt-8 overflow-hidden rounded-3xl border border-[#ded8ca] bg-white">
+              <div className="mt-8 overflow-hidden rounded-3xl border border-[#E5DFE9] bg-[#FFFDFF]">
                 {listLoading ? (
-                  <p className="p-8 text-[#716b61]">Завантажуємо…</p>
+                  <p className="p-8 text-[#77717D]">Завантажуємо…</p>
                 ) : recipes.length ? (
                   recipes.map((recipe) => (
                     <div
                       key={recipe.id}
-                      className="flex flex-col gap-4 border-b border-[#eee9df] p-4 last:border-0 sm:flex-row sm:items-center sm:justify-between sm:p-5"
+                      className="flex flex-col gap-4 border-b border-[#F0EAF2] p-4 last:border-0 sm:flex-row sm:items-center sm:justify-between sm:p-5"
                     >
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
@@ -417,19 +417,19 @@ export default function AdminPage() {
                             {recipe.title}
                           </h2>
                           {recipe.is_favorite && (
-                            <span className="rounded-full bg-[#b55d3a] px-2 py-1 text-[10px] font-bold text-white">
+                            <span className="rounded-full bg-[#B58FA3] px-2 py-1 text-[10px] font-bold text-white">
                               Улюблене
                             </span>
                           )}
                         </div>
-                        <p className="mt-1 text-xs text-[#80796e]">
+                        <p className="mt-1 text-xs text-[#7E7782]">
                           {recipe.category} · {recipe.cooking_time} хв
                         </p>
                       </div>
                       <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:shrink-0">
                         <Link
                           href={`/admin/edit/${recipe.id}`}
-                          className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#315c42]/30 px-3 py-2 text-center text-sm font-semibold text-[#315c42] transition-colors duration-300 hover:bg-[#e7f0e9] sm:px-4 sm:text-sm"
+                          className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#756A8A]/30 px-3 py-2 text-center text-sm font-semibold text-[#756A8A] transition-colors duration-300 hover:bg-[#EEEAF4] sm:px-4 sm:text-sm"
                         >
                           Редагувати
                         </Link>
@@ -443,29 +443,29 @@ export default function AdminPage() {
                     </div>
                   ))
                 ) : (
-                  <p className="p-8 text-[#716b61]">Рецептів поки немає.</p>
+                  <p className="p-8 text-[#77717D]">Рецептів поки немає.</p>
                 )}
               </div>
             </>
           ) : (
             <>
-              <p className="text-xs font-bold uppercase tracking-[.2em] text-[#b55d3a]">
+              <p className="text-xs font-bold uppercase tracking-[.2em] text-[#B58FA3]">
                 Огляд
               </p>
               <h1 className="mt-2 font-serif text-3xl sm:text-4xl">
                 Категорії
               </h1>
-              <p className="mt-3 text-[#716b61]">
+              <p className="mt-3 text-[#77717D]">
                 Кількість рецептів у кожному розділі.
               </p>
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
                 {categories.map((category) => (
                   <div
                     key={category}
-                    className="rounded-2xl border border-[#ded8ca] bg-white p-5"
+                    className="rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] p-5"
                   >
                     <p className="font-serif text-xl">{category}</p>
-                    <p className="mt-2 text-sm text-[#80796e]">
+                    <p className="mt-2 text-sm text-[#7E7782]">
                       {
                         recipes.filter((recipe) => recipe.category === category)
                           .length

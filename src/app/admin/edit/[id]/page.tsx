@@ -139,19 +139,19 @@ export default function EditRecipePage() {
 
   if (!recipe)
     return (
-      <main className="grid min-h-screen place-items-center bg-[#f8f5ee]">
-        <p className={message ? "text-red-700" : "text-[#716b61]"}>
+      <main className="grid min-h-screen place-items-center bg-[#FAF8FC]">
+        <p className={message ? "text-red-700" : "text-[#77717D]"}>
           {message || "Завантажуємо рецепт…"}
         </p>
       </main>
     );
   return (
-    <main className="min-h-screen bg-[#f8f5ee] px-4 py-7 text-[#28251f] sm:px-5 sm:py-10">
+    <main className="min-h-screen bg-[#FAF8FC] px-4 py-7 text-[#35313B] sm:px-5 sm:py-10">
       <div className="mx-auto max-w-3xl">
-        <Link href="/admin" className="text-sm font-bold text-[#315c42]">
+        <Link href="/admin" className="text-sm font-bold text-[#756A8A]">
           ← До всіх рецептів
         </Link>
-        <p className="mt-8 text-xs font-bold uppercase tracking-[.2em] text-[#b55d3a]">
+        <p className="mt-8 text-xs font-bold uppercase tracking-[.2em] text-[#B58FA3]">
           Редагування
         </p>
         <h1 className="mt-2 break-words font-serif text-3xl sm:text-4xl">
@@ -159,7 +159,7 @@ export default function EditRecipePage() {
         </h1>
         <form
           onSubmit={submit}
-          className="admin-form mt-6 min-w-0 space-y-5 overflow-visible rounded-2xl border border-[#ded8ca] bg-white p-4 sm:mt-8 sm:rounded-3xl sm:p-6 md:p-9"
+          className="admin-form mt-6 min-w-0 space-y-5 overflow-visible rounded-2xl border border-[#E5DFE9] bg-[#FFFDFF] p-4 sm:mt-8 sm:rounded-3xl sm:p-6 md:p-9"
         >
           <ImageFilePicker
             file={file}
@@ -173,7 +173,7 @@ export default function EditRecipePage() {
               required
               name="title"
               defaultValue={recipe.title}
-              className="mt-2 w-full rounded-xl border border-[#d8d1c3] px-4 py-3 font-normal"
+              className="mt-2 w-full rounded-xl border border-[#E5DFE9] px-4 py-3 font-normal"
             />
           </label>
           <div className="grid gap-5 sm:grid-cols-2">
@@ -185,7 +185,7 @@ export default function EditRecipePage() {
                 min="1"
                 name="cooking_time"
                 defaultValue={recipe.cooking_time}
-                className="mt-2 w-full rounded-xl border border-[#d8d1c3] px-4 py-3 font-normal"
+                className="mt-2 w-full rounded-xl border border-[#E5DFE9] px-4 py-3 font-normal"
               />
             </label>
             <label className="text-sm font-bold">
@@ -196,7 +196,7 @@ export default function EditRecipePage() {
                 min="1"
                 name="servings"
                 defaultValue={recipe.servings}
-                className="mt-2 w-full rounded-xl border border-[#d8d1c3] px-4 py-3 font-normal"
+                className="mt-2 w-full rounded-xl border border-[#E5DFE9] px-4 py-3 font-normal"
               />
             </label>
           </div>
@@ -214,13 +214,13 @@ export default function EditRecipePage() {
               defaultValue={recipe.difficulty}
             />
           </div>
-          <label className="flex items-center justify-between gap-4 rounded-xl bg-[#faf6ed] p-4 text-sm font-bold">
+          <label className="flex items-center justify-between gap-4 rounded-xl bg-[#F6F0F5] p-4 text-sm font-bold">
             Позначити як улюблене
             <input
               type="checkbox"
               name="is_favorite"
               defaultChecked={recipe.is_favorite}
-              className="h-5 w-5 shrink-0 accent-[#b55d3a]"
+              className="h-5 w-5 shrink-0 accent-[#B58FA3]"
             />
           </label>
           <label className="block text-sm font-bold">
@@ -230,13 +230,13 @@ export default function EditRecipePage() {
               name="description"
               defaultValue={recipe.description}
               rows={3}
-              className="mt-2 w-full rounded-xl border border-[#d8d1c3] px-4 py-3 font-normal"
+              className="mt-2 w-full rounded-xl border border-[#E5DFE9] px-4 py-3 font-normal"
             />
           </label>
           <div>
             <span className="block text-sm font-bold">Інгредієнти</span>
             <input type="hidden" name="ingredients" value={ingredientsValue} />
-            <div className="mt-2 rounded-2xl border border-[#d8d1c3] bg-[#faf8f3] p-3 font-normal">
+            <div className="mt-2 rounded-2xl border border-[#E5DFE9] bg-[#FCFAFD] p-3 font-normal">
               <IngredientComposer
                 recipeMode
                 value={ingredientsValue}
@@ -251,7 +251,7 @@ export default function EditRecipePage() {
               name="instructions"
               defaultValue={listText(recipe.instructions)}
               rows={8}
-              className="mt-2 w-full rounded-xl border border-[#d8d1c3] px-4 py-3 font-normal"
+              className="mt-2 w-full rounded-xl border border-[#E5DFE9] px-4 py-3 font-normal"
             />
           </label>
           {message && (
@@ -270,7 +270,7 @@ export default function EditRecipePage() {
             </Link>
             <button
               disabled={saving}
-              className="rounded-full bg-[#315c42] px-6 py-3 text-sm font-bold text-white disabled:opacity-60"
+              className="rounded-full bg-[#756A8A] px-6 py-3 text-sm font-bold text-white disabled:opacity-60"
             >
               {saving ? "Зберігаємо…" : "Зберегти зміни"}
             </button>
