@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CustomSelect from "@/components/ui/custom-select";
 import { parseIngredient } from "../ingredient-search";
 import { getIngredientSuggestions } from "../ingredient-suggestions";
+import { ukrainianIngredientName } from "../ingredient-catalog";
+import { listIngredientCatalog } from "../ingredient-catalog-data";
 
 type IngredientComposerProps = {
   value: string;
@@ -54,13 +56,17 @@ export default function IngredientComposer({
   recipeMode = false,
 }: IngredientComposerProps) {
   const [draft, setDraft] = useState("");
+  const [catalogNames, setCatalogNames] = useState<string[]>([]);
+  useEffect(() => {
+    void listIngredientCatalog().then(setCatalogNames);
+  }, []);
   const items = useMemo(() => itemsFromValue(value), [value]);
   const suggestions = useMemo(
     () =>
-      getIngredientSuggestions(draft).filter(
+      getIngredientSuggestions(draft, 6, catalogNames).filter(
         (suggestion) => !items.some((item) => item.name === suggestion),
       ),
-    [draft, items],
+    [catalogNames, draft, items],
   );
   const unitOptions = useMemo(
     () => toOptions(recipeMode ? recipeUnits : searchUnits),
@@ -86,7 +92,7 @@ export default function IngredientComposer({
   }
 
   function addItem(name: string) {
-    const trimmedName = name.trim();
+    const trimmedName = ukrainianIngredientName(name);
     if (!trimmedName) return;
 
     onChange(

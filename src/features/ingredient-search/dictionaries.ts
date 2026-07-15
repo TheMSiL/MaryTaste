@@ -182,6 +182,7 @@ export const externalNames: Record<string, string> = {
   творог: "cottage cheese",
   кисломолочний: "cottage cheese",
 
+  кефір: "kefir",
   кефир: "kefir",
 
   масло: "butter",
@@ -610,8 +611,9 @@ export const ingredientAliases: Record<string, string> = {
   творога: "творог",
   "cottage cheese": "творог",
 
-  кефир: "кефир",
-  kefir: "кефир",
+  кефір: "кефір",
+  кефир: "кефір",
+  kefir: "кефір",
 
   butter: "масло",
 

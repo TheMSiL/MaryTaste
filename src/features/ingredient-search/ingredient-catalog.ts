@@ -24,3 +24,8 @@ export function resolveIngredientName(value: string): ResolvedIngredient {
       Boolean(externalNames[normalizedName] || externalNames[firstWord]),
   };
 }
+
+export function ukrainianIngredientName(value: string) {
+  const normalized = value.trim().toLocaleLowerCase("uk-UA");
+  return ingredientAliases[normalized] || normalized;
+}

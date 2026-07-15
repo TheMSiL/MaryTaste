@@ -5,7 +5,10 @@ import {
   normalizeIngredient,
   parseIngredient,
 } from "./ingredient-search";
-import { resolveIngredientName } from "./ingredient-catalog";
+import {
+  resolveIngredientName,
+  ukrainianIngredientName,
+} from "./ingredient-catalog";
 import {
   applyIngredientSuggestion,
   getGenericIngredientWarning,
@@ -32,6 +35,11 @@ describe("ingredient catalog", () => {
       name: "сіль",
       canonicalName: "salt",
     });
+  });
+
+  it("corrects a Russian ingredient name to Ukrainian", () => {
+    expect(ukrainianIngredientName("Кефир")).toBe("кефір");
+    expect(resolveIngredientName("кефір").canonicalName).toBe("kefir");
   });
 });
 
@@ -118,6 +126,10 @@ describe("matchRecipes", () => {
 describe("ingredient input assistance", () => {
   it("suggests products for the current list fragment", () => {
     expect(getIngredientSuggestions("цибуля, тел")).toContain("телятина");
+  });
+
+  it("includes recipe ingredients from the shared catalog", () => {
+    expect(getIngredientSuggestions("бат", 6, ["батат"])).toContain("батат");
   });
 
   it("replaces only the current fragment", () => {

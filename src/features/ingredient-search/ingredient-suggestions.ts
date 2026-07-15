@@ -20,7 +20,11 @@ function currentFragment(input: string) {
   );
 }
 
-export function getIngredientSuggestions(input: string, limit = 6) {
+export function getIngredientSuggestions(
+  input: string,
+  limit = 6,
+  catalogNames: string[] = [],
+) {
   const fragment = currentFragment(input);
   if (fragment.length < 2 || /\d/.test(fragment)) return [];
   const generic = fragment.replace(/[’']/g, "");
@@ -31,7 +35,7 @@ export function getIngredientSuggestions(input: string, limit = 6) {
     return ["лосось", "тунець", "форель", "триска", "скумбрия"];
   }
 
-  return suggestionNames
+  return [...new Set([...catalogNames, ...suggestionNames])]
     .filter((name) => name.startsWith(fragment))
     .sort((left, right) =>
       left === fragment

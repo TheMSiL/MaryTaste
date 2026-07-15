@@ -1,5 +1,6 @@
 import { parseIngredient } from "@/features/ingredient-search/ingredient-search";
 import type { CalculatorIngredient } from "./portion-calculator";
+import { ukrainianIngredientName } from "@/features/ingredient-search/ingredient-catalog";
 
 function displayName(line: string) {
   return line
@@ -16,6 +17,20 @@ export function ingredientLines(value: FormDataEntryValue | null) {
     .split(/[,;\n]+/)
     .map((line) => line.trim())
     .filter(Boolean);
+}
+
+export function correctedIngredientLines(value: FormDataEntryValue | null) {
+  return ingredientLines(value).map((line) => {
+    const ingredient = parseIngredient(line);
+    if (!ingredient) return line;
+    const correctedName = ukrainianIngredientName(ingredient.name);
+    if (correctedName === ingredient.name) return line;
+    return line.replace(new RegExp(`^${escapeRegExp(ingredient.name)}`, "iu"), correctedName);
+  });
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 export function structuredIngredients(lines: string[]) {

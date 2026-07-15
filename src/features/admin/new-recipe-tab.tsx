@@ -38,7 +38,7 @@ export default function NewRecipeTab({
       <p className="text-xs font-bold uppercase tracking-[.2em] text-[#B58FA3]">Новий запис</p>
       <h1 className="mt-2 font-serif text-3xl sm:text-4xl">Додати рецепт</h1>
       <p className="mt-3 text-sm leading-6 text-[#77717D] sm:text-base">
-        Заповніть картку — рецепт з’явиться в загальній колекції.
+        Чернетку можна зберегти незаповненою. У колекції з’являються лише опубліковані рецепти.
       </p>
       <form
         onSubmit={onSubmit}

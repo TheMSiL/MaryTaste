@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase";
 import { missingStructuredIngredientsColumn } from "@/features/recipes/ingredients";
 import type { AdminRecipe, EditableRecipe, RecipeWritePayload } from "./types";
+import { ukrainianIngredientName } from "@/features/ingredient-search/ingredient-catalog";
 
 function requireSuccess(error: { message: string } | null) {
   if (error) throw new Error(error.message);
@@ -82,25 +83,37 @@ export async function deleteRecipeImage(publicUrl: string | null) {
 export async function createAdminRecipe(payload: RecipeWritePayload) {
   const supabase = createClient();
   let { error } = await supabase.from("recipes").insert(payload);
-  if (error && (missingStructuredIngredientsColumn(error.message) || error.message.includes("status"))) {
-    const { structured_ingredients: omitted, status: omittedStatus, ...legacyPayload } = payload;
+  if (error && missingStructuredIngredientsColumn(error.message)) {
+    const { structured_ingredients: omitted, ...legacyPayload } = payload;
     void omitted;
-    void omittedStatus;
     ({ error } = await supabase.from("recipes").insert(legacyPayload));
   }
   requireSuccess(error);
+  await syncIngredientCatalog(payload.structured_ingredients);
 }
 
 export async function updateAdminRecipe(id: string, payload: RecipeWritePayload) {
   const supabase = createClient();
   let { error } = await supabase.from("recipes").update(payload).eq("id", id);
-  if (error && (missingStructuredIngredientsColumn(error.message) || error.message.includes("status"))) {
-    const { structured_ingredients: omitted, status: omittedStatus, ...legacyPayload } = payload;
+  if (error && missingStructuredIngredientsColumn(error.message)) {
+    const { structured_ingredients: omitted, ...legacyPayload } = payload;
     void omitted;
-    void omittedStatus;
     ({ error } = await supabase.from("recipes").update(legacyPayload).eq("id", id));
   }
   requireSuccess(error);
+  await syncIngredientCatalog(payload.structured_ingredients);
+}
+
+async function syncIngredientCatalog(
+  ingredients: RecipeWritePayload["structured_ingredients"],
+) {
+  const names = [...new Set(ingredients.map((item) => ukrainianIngredientName(item.name)).filter(Boolean))];
+  if (!names.length) return;
+  const { error } = await createClient()
+    .from("ingredient_catalog")
+    .upsert(names.map((name) => ({ name })), { onConflict: "name" });
+  // Older installations may not have run the catalog migration yet.
+  if (error && !error.message.includes("ingredient_catalog")) requireSuccess(error);
 }
 
 export async function deleteAdminRecipe(id: string) {

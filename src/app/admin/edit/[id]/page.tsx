@@ -10,7 +10,7 @@ import {
   difficultyOptions,
 } from "@/features/recipes/constants";
 import {
-  ingredientLines,
+  correctedIngredientLines,
   structuredIngredients,
 } from "@/features/recipes/ingredients";
 import {
@@ -69,8 +69,8 @@ export default function EditRecipePage() {
     notify("Зберігаємо зміни…", "success", true);
     const form = new FormData(event.currentTarget);
     const status = ((event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null)?.value === "draft" ? "draft" as const : "published" as const;
-    const ingredients = ingredientLines(form.get("ingredients"));
-    if (!ingredients.length) {
+    const ingredients = correctedIngredientLines(form.get("ingredients"));
+    if (status === "published" && !ingredients.length) {
       notify("Додайте хоча б один інгредієнт", "error");
       setSaving(false);
       return;

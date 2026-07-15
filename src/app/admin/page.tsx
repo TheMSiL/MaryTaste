@@ -24,7 +24,7 @@ import RecipePreview, { previewFromForm, type RecipePreviewData } from "@/featur
 import { useUnsavedChanges } from "@/features/admin/use-unsaved-changes";
 import { categories as fallbackCategories } from "@/features/recipes/constants";
 import {
-  ingredientLines,
+  correctedIngredientLines,
   structuredIngredients,
 } from "@/features/recipes/ingredients";
 import { createClient } from "@/lib/supabase";
@@ -97,8 +97,8 @@ export default function AdminPage() {
     const formElement = event.currentTarget;
     const form = new FormData(formElement);
     const status = ((event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null)?.value === "draft" ? "draft" as const : "published" as const;
-    const ingredients = ingredientLines(form.get("ingredients"));
-    if (!ingredients.length) {
+    const ingredients = correctedIngredientLines(form.get("ingredients"));
+    if (status === "published" && !ingredients.length) {
       notify("Додайте хоча б один інгредієнт", "error");
       setSaving(false);
       return;
@@ -124,7 +124,7 @@ export default function AdminPage() {
       }
     }
 
-    const title = String(form.get("title"));
+    const title = String(form.get("title") || "").trim();
     const payload = {
       title,
       slug: `${title
@@ -132,17 +132,17 @@ export default function AdminPage() {
         .trim()
         .replace(/[^a-zа-яіїєґ0-9]+/gi, "-")
         .replace(/(^-|-$)/g, "")}-${crypto.randomUUID().slice(0, 8)}`,
-      cooking_time: Number(form.get("cooking_time")),
-      servings: Number(form.get("servings")),
-      category: String(form.get("category")),
-      difficulty: String(form.get("difficulty")),
-      description: String(form.get("description")),
+      cooking_time: Number(form.get("cooking_time") || 0),
+      servings: Number(form.get("servings") || 0),
+      category: String(form.get("category") || ""),
+      difficulty: String(form.get("difficulty") || ""),
+      description: String(form.get("description") || ""),
       image_url: imageUrl || null,
       is_favorite: form.get("is_favorite") === "on",
       status,
       ingredients,
       structured_ingredients: structuredIngredients(ingredients),
-      instructions: String(form.get("instructions"))
+      instructions: String(form.get("instructions") || "")
         .split("\n")
         .map((step) => step.trim())
         .filter(Boolean),
